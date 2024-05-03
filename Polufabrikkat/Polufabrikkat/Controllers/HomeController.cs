@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Polufabrikkat.Models;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 
 namespace Polufabrikkat.Controllers
 {
@@ -13,12 +15,27 @@ namespace Polufabrikkat.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(IFormFile loadFile)
         {
-            return View();
+			LoadImageModel model = new LoadImageModel();
+			string dirPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+			if (loadFile != null)
+			{
+				string fileName = Path.GetFileName(loadFile.FileName);
+				string filePath = Path.Combine(dirPath, fileName);
+				using (FileStream outputFileStream = new FileStream(filePath, FileMode.Create))
+				{
+					await loadFile.CopyToAsync(outputFileStream);
+
+				}
+			}
+
+			model.FileNames = Directory.GetFiles(dirPath);
+
+			return View(model);
         }
 
-        public IActionResult Privacy()
+		public IActionResult Privacy()
         {
             return View();
         }
