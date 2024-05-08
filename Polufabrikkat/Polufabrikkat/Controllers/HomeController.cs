@@ -17,26 +17,7 @@ namespace Polufabrikkat.Controllers
 
         public async Task<IActionResult> Index(IFormFile loadFile)
         {
-			LoadImageModel model = new LoadImageModel();
-			string dirPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
-			if (!Directory.Exists(dirPath))
-			{
-				Directory.CreateDirectory(dirPath);
-			}
-			if (loadFile != null)
-			{
-				string fileName = Path.GetFileName(loadFile.FileName);
-				string filePath = Path.Combine(dirPath, fileName);
-				using (FileStream outputFileStream = new FileStream(filePath, FileMode.Create))
-				{
-					await loadFile.CopyToAsync(outputFileStream);
-
-				}
-			}
-
-			model.FileNames = Directory.GetFiles(dirPath);
-
-			return View(model);
+			return View();
         }
 
 		public IActionResult Privacy()
@@ -44,7 +25,12 @@ namespace Polufabrikkat.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+		public IActionResult TermsOfService()
+		{
+			return View();
+		}
+
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

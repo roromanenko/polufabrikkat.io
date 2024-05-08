@@ -1,24 +1,16 @@
-﻿@model LoadImageModel
-
-@{
-    ViewData["Title"] = "Home Page";
+﻿@{
+    ViewData["Title"] = "Future Posting";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-	<div>Loaded file:
-		@foreach (var file in Model.FileNames)
-		{
-			<p>@file</p>
-		}
+    <h1 class="display-4">Welcome to Future Posting</h1>
+	<div>
+		TikTok Delayed Publication Service is a convenient tool, 
+		allowing users to schedule and publish content on TikTok at a later time and date. 
+		With easy registration and account management, 
+		users can maintain full control over their content while leveraging the platform's scheduling capabilities. 
+		By ensuring timely and strategic content releases, 
+		users can optimize their TikTok presence for maximum engagement and impact.
 	</div>
 </div>
 
-<form method="post" enctype="multipart/form-data" asp-controller="Home"
-	  asp-action="Index">
-	<span>Select File:</span>
-	<input type="file" name="loadFile" />
-	<input type="submit" value="Upload" />
-	<br />
-</form>
