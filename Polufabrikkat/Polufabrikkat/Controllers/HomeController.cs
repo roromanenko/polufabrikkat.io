@@ -19,6 +19,10 @@ namespace Polufabrikkat.Controllers
         {
 			LoadImageModel model = new LoadImageModel();
 			string dirPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+			if (!Directory.Exists(dirPath))
+			{
+				Directory.CreateDirectory(dirPath);
+			}
 			if (loadFile != null)
 			{
 				string fileName = Path.GetFileName(loadFile.FileName);

@@ -28,10 +28,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "Images");
+if (!Directory.Exists(imagesPath))
+{
+	Directory.CreateDirectory(imagesPath);
+}
 app.UseStaticFiles(new StaticFileOptions
 {
-	FileProvider = new PhysicalFileProvider(
-		   Path.Combine(builder.Environment.ContentRootPath, "Images")),
+	FileProvider = new PhysicalFileProvider(imagesPath),
 	RequestPath = "/Images"
 });
 
