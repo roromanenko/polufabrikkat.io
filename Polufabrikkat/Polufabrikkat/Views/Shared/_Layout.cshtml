@@ -19,36 +19,38 @@
 </script>
 
 <body>
-    <header class="header">
-        <div class="container">
-            <img src="~/img/logo.png" alt="logo" class="header_logo" />
+    <div class="main-container">
+		<header class="header">
+			<div class="container">
+				<img src="~/img/logo.png" alt="logo" class="header_logo" />
 
-            <nav class="header_nav">
-                <ul class="header_list">
-                    <a class="active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
-                    <a asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
-                </ul>
-            </nav>
+				<nav class="header_nav">
+					<ul class="header_list">
+						<a class="active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+						<a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+						<a asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
+					</ul>
+				</nav>
 
-            <a href='@Url.Action("RedirectToTikTokLogin", "Home")' class="btn btn-primary btn-lg">Tik-tok login</a>
-        </div>
-    </header>
+				<a href='@Url.Action("RedirectToTikTokLogin", "Home")' class="btn btn-primary btn-lg">Tik-tok login</a>
+			</div>
+		</header>
 
-    <div>
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+		<div>
+			<main role="main" class="pb-3">
+				@RenderBody()
+			</main>
+		</div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-			&copy; 2024 - Future Posting - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a><span>  </span><a asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+		<footer class="border-top footer text-muted">
+			<div class="container">
+				&copy; 2024 - Future Posting - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a><span>  </span><a asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
+			</div>
+		</footer>
+		<script src="~/lib/jquery/dist/jquery.min.js"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="~/js/site.js" asp-append-version="true"></script>
+		@await RenderSectionAsync("Scripts", required: false)
+	</div>
 </body>
 </html>

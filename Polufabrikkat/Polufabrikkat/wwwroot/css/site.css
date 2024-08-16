@@ -91,8 +91,15 @@ ul {
     transition: none; /* Убираем эффект перехода */
 }
 
-    .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
-        background-color: #ffffff00; /* Сохраняем цвет фона */
-        color: #4682b4; /* Сохраняем цвет текста */
-        box-shadow: none; /* Убираем тени при наведении */
-    }
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
+    background-color: #ffffff00; /* Сохраняем цвет фона */
+    color: #4682b4; /* Сохраняем цвет текста */
+    box-shadow: none; /* Убираем тени при наведении */
+}
+
+.main-container {
+	background-image: url("/img/welcome_background.svg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+}

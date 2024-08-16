@@ -12,16 +12,6 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
-.welcome {
-    margin: -100px;
-    padding: 240px 0;
-
-    background-image: url("/img/welcome_background.svg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position:center;
-}
-
 .welcome_text {
     width: 650px;
     padding: 0;
