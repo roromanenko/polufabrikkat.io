@@ -1,4 +1,5 @@
 using Microsoft.Extensions.FileProviders;
+using Polufabrikkat.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -17,6 +18,10 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddHttpClient();
+builder.Services.Configure<FileUploadOptions>(x =>
+{
+	x.FileUploadPath = Path.Combine(builder.Environment.ContentRootPath, "Images");
+});
 
 var app = builder.Build();
 

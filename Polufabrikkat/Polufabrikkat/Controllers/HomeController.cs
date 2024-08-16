@@ -1,37 +1,35 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
 using Polufabrikkat.Models;
+using Polufabrikkat.Options;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Security.AccessControl;
-using System.Text;
-using System.Text.Json;
 using System.Web;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Polufabrikkat.Controllers
 {
-    public class HomeController : Controller
-    {
-        private readonly ILogger<HomeController> _logger;
+	public partial class HomeController : Controller
+	{
+		private readonly ILogger<HomeController> _logger;
 		private readonly HttpClient _httpClient;
+		private readonly FileUploadOptions _fileUploadOptions;
 
-		public HomeController(ILogger<HomeController> logger, HttpClient httpClient)
-        {
-            _logger = logger;
+		public HomeController(ILogger<HomeController> logger, HttpClient httpClient, IOptions<FileUploadOptions> fileUploadOptions)
+		{
+			_logger = logger;
 			_httpClient = httpClient;
+			_fileUploadOptions = fileUploadOptions.Value;
 		}
 
-        public async Task<IActionResult> Index()
-        {
+		public async Task<IActionResult> Index()
+		{
 			return View();
-        }
+		}
 
 		public IActionResult Privacy()
-        {
-            return View();
-        }
+		{
+			return View();
+		}
 
 		public IActionResult TermsOfService()
 		{
@@ -39,10 +37,10 @@ namespace Polufabrikkat.Controllers
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+		public IActionResult Error()
+		{
+			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
 
 		public IActionResult RedirectToTikTokLogin()
 		{

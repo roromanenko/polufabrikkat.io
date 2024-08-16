@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - Polufabrikkat</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 @await RenderSectionAsync("Styles", required: false)
 <!-- Google tag (gtag.js) -->
@@ -37,7 +38,7 @@
 		</header>
 
 		<div>
-			<main role="main" class="pb-3">
+			<main role="main" class="main-content" class="pb-3">
 				@RenderBody()
 			</main>
 		</div>

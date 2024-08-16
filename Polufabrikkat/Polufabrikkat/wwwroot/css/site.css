@@ -103,3 +103,7 @@ ul {
 	background-size: cover;
 	background-position: center;
 }
+
+.main-content {
+	min-height: 500px;
+}

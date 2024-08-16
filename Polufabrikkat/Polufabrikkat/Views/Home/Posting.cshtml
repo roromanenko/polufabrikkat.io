@@ -1,0 +1,30 @@
+﻿@{
+	ViewData["Title"] = "New Post";
+}
+
+<label for="fileToLoad">Choose a file:</label>
+<input type="file" id="fileToLoad" name="fileToLoad" />
+<button id="uploadButton">Upload</button>
+
+<script>
+	$("#uploadButton").click(function () {
+		var file = $("#fileToLoad")[0].files[0];
+		var formData = new FormData();
+		formData.append('fileUpload', file);
+		$.ajax({
+			type: "POST",
+			url: "@Url.Action("UploadFile", "Home")",
+			data: formData,
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			cache: false,
+			success: function(response) {
+
+			},
+			error: function (error) {
+
+			}
+		});
+	});
+</script>
