@@ -1,0 +1,62 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Playfair+Display:wght@900&family=Source+Sans+Pro:wght@350&display=swap');
+
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    color: #2C3E50;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: #4682B4;
+    margin: 0;
+}
+
+.welcome {
+    margin: -100px;
+    padding: 240px 0;
+
+    background-image: url("/img/welcome_background.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position:center;
+}
+
+.welcome_text {
+    width: 650px;
+    padding: 0;
+}
+
+.welcome_title {
+    font-size: 58px;
+}
+
+.welcome_desc {
+    font-size: 18px;
+    opacity: 0.8;
+    margin: 40px 0;
+}
+
+button, .accent {
+    font-family: 'Montserrat', sans-serif; /* Accent text */
+    font-weight: 700;
+}
+
+.border {
+    border-color: #DCDCDC; /* Border color */
+}
+
+.container-fluid {
+    padding-left: 0; /* Remove left padding */
+    padding-right: 0; /* Remove right padding */
+}
+
+.text-column, .image-column {
+    padding: 0;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+    margin-left: 120px;
+}

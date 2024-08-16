@@ -1,18 +1,98 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Playfair+Display:wght@900&family=Source+Sans+Pro:wght@350&display=swap');
 
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: #F0F4F8;
+    color: #2C3E50;
 }
+
+a {
+    font-family: 'Montserrat', serif;
+    color: #2C3E50;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+}
+
+.container {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 15px;
+}
+
+.header {
+    padding: 25px 0;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.header_logo {
+    width: 200px;
+}
+
+.header_nav a {
+    font-size: 18px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.header_nav a.active {
+    color: #2C3E50;
+    opacity: 1;
+}
+
+.header_nav a:hover {
+    color: #2C3E50;
+    opacity: 0.9;
+}
+
+.header_list {
+    display: flex;
+    gap: 30px;
+}
+
+.btn-primary {
+    background-color: #4682b4; /* Button background color */
+    color: #f0f4f8; /* Button text color */
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    box-shadow: 0 0px 10px rgba(92, 165, 226, 0.9);
+}
+
+.btn-primary:hover {
+    background-color: #5ca5e2; /* Button background color on hover */
+}
+
+.btn-secondary {
+    background-color: #ffffff00; /* Button background color */
+    color: #4682b4; /* Button text color */
+    border: none;
+    padding: 0px 0px;
+    font-size: 18px; /* Button font size */
+    font-weight: bold;
+    border-radius: 25px;
+    transition: none; /* Убираем эффект перехода */
+}
+
+    .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
+        background-color: #ffffff00; /* Сохраняем цвет фона */
+        color: #4682b4; /* Сохраняем цвет текста */
+        box-shadow: none; /* Убираем тени при наведении */
+    }

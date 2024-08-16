@@ -6,7 +6,6 @@
     <title>@ViewData["Title"] - Polufabrikkat</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Polufabrikkat.styles.css" asp-append-version="true" />
 </head>
 @await RenderSectionAsync("Styles", required: false)
 <!-- Google tag (gtag.js) -->
@@ -20,31 +19,23 @@
 </script>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Polufabrikkat</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
-                        </li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
-						</li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+    <header class="header">
+        <div class="container">
+            <img src="~/img/logo.png" alt="logo" class="header_logo" />
+
+            <nav class="header_nav">
+                <ul class="header_list">
+                    <a class="active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+                    <a asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
+                </ul>
+            </nav>
+
+            <a href='@Url.Action("RedirectToTikTokLogin", "Home")' class="btn btn-primary btn-lg">Tik-tok login</a>
+        </div>
     </header>
-    <div class="container">
+
+    <div>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
