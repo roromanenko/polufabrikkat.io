@@ -1,10 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Polufabrikkat.Site.Options;
 
 namespace Polufabrikkat.Site.Controllers
 {
-	public partial class HomeController
+	public class PostingController : Controller
 	{
-		public IActionResult Posting()
+		private readonly FileUploadOptions _fileUploadOptions;
+
+		public PostingController(IOptions<FileUploadOptions> fileUploadOptions)
+		{
+			_fileUploadOptions = fileUploadOptions.Value;
+		}
+
+		public IActionResult Index()
 		{
 			return View();
 		}

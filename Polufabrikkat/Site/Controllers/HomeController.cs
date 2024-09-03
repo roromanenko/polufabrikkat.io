@@ -9,17 +9,15 @@ using System.Web;
 
 namespace Polufabrikkat.Site.Controllers
 {
-	public partial class HomeController : Controller
+	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
 		private readonly ITikTokApiClient _tikTokApiClient;
-		private readonly FileUploadOptions _fileUploadOptions;
 
-		public HomeController(ILogger<HomeController> logger, IOptions<FileUploadOptions> fileUploadOptions, ITikTokApiClient tikTokApiClient)
+		public HomeController(ILogger<HomeController> logger, ITikTokApiClient tikTokApiClient)
 		{
 			_logger = logger;
 			_tikTokApiClient = tikTokApiClient;
-			_fileUploadOptions = fileUploadOptions.Value;
 		}
 
 		public IActionResult Index()
