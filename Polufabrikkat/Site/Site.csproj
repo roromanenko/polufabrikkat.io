@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>0e79bd08-3ac7-4940-9ff3-1076a7582ed7</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RootNamespace>Polufabrikkat.Site</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

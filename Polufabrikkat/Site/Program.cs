@@ -1,5 +1,5 @@
 using Microsoft.Extensions.FileProviders;
-using Polufabrikkat.Options;
+using Polufabrikkat.Site.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";

@@ -1,4 +1,4 @@
-﻿namespace Polufabrikkat.Models
+﻿namespace Polufabrikkat.Site.Models
 {
 	public class LoadImageModel
 	{

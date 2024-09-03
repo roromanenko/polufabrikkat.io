@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
-using Polufabrikkat.Models;
-using Polufabrikkat.Options;
+using Polufabrikkat.Site.Models;
+using Polufabrikkat.Site.Options;
 using System.Diagnostics;
 using System.Web;
 
-namespace Polufabrikkat.Controllers
+namespace Polufabrikkat.Site.Controllers
 {
 	public partial class HomeController : Controller
 	{

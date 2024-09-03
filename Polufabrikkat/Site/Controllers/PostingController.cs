@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Polufabrikkat.Controllers
+namespace Polufabrikkat.Site.Controllers
 {
 	public partial class HomeController
 	{
