@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
+using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Site.Models;
 using Polufabrikkat.Site.Options;
 using System.Diagnostics;
@@ -11,17 +12,17 @@ namespace Polufabrikkat.Site.Controllers
 	public partial class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
-		private readonly HttpClient _httpClient;
+		private readonly ITikTokApiClient _tikTokApiClient;
 		private readonly FileUploadOptions _fileUploadOptions;
 
-		public HomeController(ILogger<HomeController> logger, HttpClient httpClient, IOptions<FileUploadOptions> fileUploadOptions)
+		public HomeController(ILogger<HomeController> logger, IOptions<FileUploadOptions> fileUploadOptions, ITikTokApiClient tikTokApiClient)
 		{
 			_logger = logger;
-			_httpClient = httpClient;
+			_tikTokApiClient = tikTokApiClient;
 			_fileUploadOptions = fileUploadOptions.Value;
 		}
 
-		public async Task<IActionResult> Index()
+		public IActionResult Index()
 		{
 			return View();
 		}
@@ -44,66 +45,25 @@ namespace Polufabrikkat.Site.Controllers
 
 		public IActionResult RedirectToTikTokLogin()
 		{
-			var clientKey = "***REMOVED***"; // from tiktok dev
-			var scope = "user.info.basic,video.publish,video.upload";
 			var redirectUrl = Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
-			var uniqueIdentificatorState = Guid.NewGuid().ToString("N");
-			var responseType = "code";
-			var queryString = new Dictionary<string, string>()
-			{
-				["client_key"] = clientKey,
-				["scope"] = scope,
-				["redirect_uri"] = redirectUrl,
-				["state"] = uniqueIdentificatorState,
-				//["code_challenge"] = uniqueIdentificatorState,
-				//["code_challenge_method"] = "plain",
-				["response_type"] = responseType
-			};
-
-			var authorizationUrl = "https://www.tiktok.com/v2/auth/authorize/";
-			var url = new Uri(QueryHelpers.AddQueryString(authorizationUrl, queryString));
-
-			return Redirect(url.ToString());
+			var loginUrl = _tikTokApiClient.GetLoginUrl(redirectUrl);
+			return Redirect(loginUrl);
 		}
 
 		public async Task<IActionResult> ProcessTikTokLoginResponse()
 		{
-			if (!Request.Query.ContainsKey("access_token"))
+			var response = new
 			{
-				var response = new
-				{
-					Code = Request.Query["code"],
-					Scopes = Request.Query["scopes"],
-					State = Request.Query["state"],
-					Error = Request.Query["error"],
-					Error_description = Request.Query["error_description"],
-				};
+				Code = Request.Query["code"],
+				Scopes = Request.Query["scopes"],
+				State = Request.Query["state"],
+				Error = Request.Query["error"],
+				Error_description = Request.Query["error_description"],
+			};
 
-				var clientKey = "***REMOVED***"; // from tiktok dev
-				var clientSecret = "***REMOVED***";
-				var redirectUrl = Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
+			var redirectUrl = Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
 
-				var accessTokenUrl = "https://open.tiktokapis.com/v2/oauth/token/";
-				var queryString = new Dictionary<string, string>()
-				{
-					["client_key"] = clientKey,
-					["client_secret"] = clientSecret,
-					["code"] = HttpUtility.UrlDecode(response.Code),
-					["grant_type"] = "authorization_code",
-					["redirect_uri"] = redirectUrl,
-				};
-
-				using var request = new HttpRequestMessage(HttpMethod.Post, accessTokenUrl)
-				{
-					Content = new FormUrlEncodedContent(queryString),
-				};
-				//request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-				using var res = await _httpClient.SendAsync(request);
-
-				var content = await res.Content.ReadAsStringAsync();
-
-			}
-			var acctresponse = Request;
+			var tokenData = await _tikTokApiClient.GetAuthToken(HttpUtility.UrlDecode(response.Code), redirectUrl);
 			return RedirectToAction("Index", "Home");
 		}
 	}

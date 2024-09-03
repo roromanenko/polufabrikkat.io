@@ -1,6 +1,8 @@
 ﻿Polufabrikkat/.vs
+
 Polufabrikkat/Site/bin
 Polufabrikkat/Site/Images
 Polufabrikkat/Site/obj
-Polufabrikkat/Site/bin
-Polufabrikkat/Site/obj
+
+Polufabrikkat/Core/bin
+Polufabrikkat/Core/obj
