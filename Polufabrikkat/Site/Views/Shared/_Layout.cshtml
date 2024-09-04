@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+	var authorized = User.Identity.IsAuthenticated;
+	var userName = User.Identity.Name;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -33,7 +38,17 @@
 					</ul>
 				</nav>
 
-				<a href='@Url.Action("RedirectToTikTokLogin", "Home")' class="btn btn-primary btn-lg">Tik-tok login</a>
+				@if (authorized)
+				{
+					<div>
+						<span class="user-name">@userName</span>
+						<a href='' class="btn btn-secondary" style="padding-left: 10px;">Sign Off</a>
+					</div>
+				}
+				else
+				{
+					<a href='@Url.Action("RedirectToTikTokLogin", "Home")' class="btn btn-primary btn-lg">Tik-tok login</a>
+				}
 			</div>
 		</header>
 

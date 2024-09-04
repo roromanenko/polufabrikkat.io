@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Polufabrikkat.Site.Options;
 
 namespace Polufabrikkat.Site.Controllers
 {
+	[Authorize]
 	public class PostingController : Controller
 	{
 		private readonly FileUploadOptions _fileUploadOptions;

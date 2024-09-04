@@ -107,3 +107,8 @@ ul {
 .main-content {
 	min-height: 500px;
 }
+
+.user-name {
+	font-size: 18px;
+	font-weight: bold;
+}

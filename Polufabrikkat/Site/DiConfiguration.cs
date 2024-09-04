@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.FileProviders;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.FileProviders;
 using Polufabrikkat.Site.Options;
 
 namespace Polufabrikkat.Site
@@ -27,6 +28,13 @@ namespace Polufabrikkat.Site
 				x.FileUploadPath = Path.Combine(environment.ContentRootPath, "Images");
 			});
 
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie(options =>
+				{
+					options.LoginPath = "/Home/RedirectToTikTokLogin";
+
+				});
+
 			return services;
 		}
 
@@ -53,9 +61,13 @@ namespace Polufabrikkat.Site
 				FileProvider = new PhysicalFileProvider(imagesPath),
 				RequestPath = "/Images"
 			});
+
 			app.UseRouting();
 			app.UseCors(SpecificOrigins);
+
+			app.UseAuthentication();
 			app.UseAuthorization();
+
 			app.MapControllerRoute(
 				name: "default",
 				pattern: "{controller=Home}/{action=Index}/{id?}");
