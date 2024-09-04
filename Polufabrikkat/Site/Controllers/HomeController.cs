@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Site.Models;
-using Polufabrikkat.Site.Options;
 using System.Diagnostics;
 using System.Web;
 
 namespace Polufabrikkat.Site.Controllers
 {
+	[AllowAnonymous]
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
@@ -43,6 +42,7 @@ namespace Polufabrikkat.Site.Controllers
 
 		public IActionResult RedirectToTikTokLogin()
 		{
+			Request.IsHttps = true;
 			var redirectUrl = Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
 			var loginUrl = _tikTokApiClient.GetLoginUrl(redirectUrl);
 			return Redirect(loginUrl);
@@ -62,6 +62,8 @@ namespace Polufabrikkat.Site.Controllers
 			var redirectUrl = Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
 
 			var tokenData = await _tikTokApiClient.GetAuthToken(HttpUtility.UrlDecode(response.Code), redirectUrl);
+
+			var userInfo = await _tikTokApiClient.GetUserInfo(tokenData);
 			return RedirectToAction("Index", "Home");
 		}
 	}

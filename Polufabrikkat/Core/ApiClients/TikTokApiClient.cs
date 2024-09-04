@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.TikTok;
+using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Web;
 
 namespace Polufabrikkat.Core.ApiClients
@@ -37,7 +39,10 @@ namespace Polufabrikkat.Core.ApiClients
 			};
 			using var res = await _httpClient.SendAsync(request);
 
-			var content = await res.Content.ReadFromJsonAsync<AuthTokenData>();
+			var content = await res.Content.ReadFromJsonAsync<AuthTokenData>(new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+			});
 			return content;
 		}
 
@@ -60,6 +65,26 @@ namespace Polufabrikkat.Core.ApiClients
 			var url = new Uri(QueryHelpers.AddQueryString(authorizationUrl, queryString));
 
 			return url.ToString();
+		}
+
+		public async Task<UserInfo> GetUserInfo(AuthTokenData authData)
+		{
+			var getUserInfoUrl = "https://open.tiktokapis.com/v2/user/info/";
+			var fields = "open_id,union_id,display_name";
+
+			var url = new UriBuilder(getUserInfoUrl);
+			url.Query = $"fields={fields}";
+
+			using var request = new HttpRequestMessage(HttpMethod.Get, url.Uri);
+			request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(authData.TokenType, authData.AccessToken);
+
+			using var res = await _httpClient.SendAsync(request);
+			var content = await res.Content.ReadFromJsonAsync<UserInfoResponse>(new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+			});
+
+			return content.Data.User;
 		}
 	}
 }

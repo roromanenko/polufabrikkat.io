@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.FileProviders;
-using Polufabrikkat.Core;
 using Polufabrikkat.Site.Options;
 
 namespace Polufabrikkat.Site
@@ -27,8 +26,6 @@ namespace Polufabrikkat.Site
 			{
 				x.FileUploadPath = Path.Combine(environment.ContentRootPath, "Images");
 			});
-
-			services.AddCoreServices();
 
 			return services;
 		}
