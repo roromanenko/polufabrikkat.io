@@ -63,11 +63,8 @@ namespace Polufabrikkat.Site.Controllers
 			};
 
 			var redirectUrl = Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
-
 			var tokenData = await _tikTokApiClient.GetAuthToken(HttpUtility.UrlDecode(response.Code), redirectUrl);
-
 			var userInfo = await _tikTokApiClient.GetUserInfo(tokenData);
-
 
 			var claims = new List<Claim>
 			{

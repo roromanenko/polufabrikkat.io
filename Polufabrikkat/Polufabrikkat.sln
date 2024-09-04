@@ -5,7 +5,12 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Site", "Site\Site.csproj", "{B9EED4BE-058F-45DC-8AB3-C54FF3A434ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{17508F93-3877-451E-9A32-155A27F144C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{17508F93-3877-451E-9A32-155A27F144C8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3CD00FC0-E6C2-4CDC-8F27-B744A0B22508}"
+	ProjectSection(SolutionItems) = preProject
+		BuildSiteDocker.cmd = BuildSiteDocker.cmd
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
