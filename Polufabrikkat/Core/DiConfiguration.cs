@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Polufabrikkat.Core.ApiClients;
 using Polufabrikkat.Core.Interfaces;
+using Polufabrikkat.Core.Options;
+using Polufabrikkat.Core.Repositories;
 
 namespace Polufabrikkat.Core
 {
@@ -19,7 +21,9 @@ namespace Polufabrikkat.Core
 				return client;
 			});
 
+			services.Configure<MongoDbOptions>(configuration.GetSection(nameof(MongoDbOptions)));
 			services.AddScoped<ITikTokApiClient, TikTokApiClient>();
+			services.AddScoped<IUserRepository, UserRepository>();
 
 			return services;
 		}

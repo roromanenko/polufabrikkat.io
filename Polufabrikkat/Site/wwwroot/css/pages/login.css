@@ -1,0 +1,73 @@
+﻿.login-container {
+	display: flex;
+	justify-content: center; /* Center horizontally */
+	align-items: center; /* Center vertically */
+	margin: 0; /* Remove default body margin */
+	flex-direction: column;
+	margin-bottom: 20px;
+}
+
+/* Style for the form container */
+.login-form {
+	background-color: white;
+	padding: 30px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+	width: 100%;
+	max-width: 400px; /* Limit form width */
+}
+
+/* Style for the form title */
+.page-title {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+/* Additional styling for form controls */
+.form-group {
+	margin-bottom: 15px;
+}
+
+.form-control {
+	width: 100%;
+	padding: 10px;
+	margin-top: 5px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+.alert {
+	margin-bottom: 15px;
+}
+
+.social-login-section {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.social-login-section h6 {
+	margin-bottom: 20px;
+}
+
+.btn-social {
+	width: 100%;
+	text-align: center;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+.btn-google {
+	background-color: #DB4437;
+}
+
+.btn-tiktok {
+	background-color: #000000;
+}
+
+.btn-google:hover {
+	background-color: #a33e2f;
+}
+
+.btn-tiktok:hover {
+	background-color: #333333;
+}

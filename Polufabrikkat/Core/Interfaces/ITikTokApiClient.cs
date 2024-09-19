@@ -5,7 +5,7 @@ namespace Polufabrikkat.Core.Interfaces
 	public interface ITikTokApiClient
 	{
 		public Task<AuthTokenData> GetAuthToken(string decodedCode, string redirectUrl);
-		public string GetLoginUrl(string redirectUrl);
+		public string GetLoginUrl(string redirectUrl, string returnUrl);
 		public Task<UserInfo> GetUserInfo(AuthTokenData authData);
 	}
 }

@@ -1,0 +1,98 @@
+﻿@using Polufabrikkat.Site.Models;
+@model LoginModel
+
+@{
+	ViewData["Title"] = "Login";
+}
+
+@section Styles
+{
+	<link rel="stylesheet" href="~/css/pages/login.css" asp-append-version="true" />
+}
+
+@section Scripts
+{
+	<!-- For client-side validation -->
+	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/pages/login/login.js" asp-append-version="true"></script>
+}
+
+<div class="login-container" id="login">
+	<h2 class="page-title">{{ currentComponent }}</h2>
+
+	@if (!string.IsNullOrEmpty(Model.Error))
+	{
+		<div class="alert alert-danger">
+			@Model.Error
+		</div>
+	}
+
+	<div class="login-form" v-show="currentComponent == 'Login'">
+		<form asp-action="Login" method="post">
+			<div class="form-group">
+				<label asp-for="Username" class="control-label"></label>
+				<input asp-for="Username" class="form-control" />
+				<span asp-validation-for="Username" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<label asp-for="Password" class="control-label"></label>
+				<input asp-for="Password" type="password" class="form-control" />
+				<span asp-validation-for="Password" class="text-danger"></span>
+			</div>
+
+			<!-- Hidden field to capture ReturnUrl -->
+			<input asp-for="ReturnUrl" type="hidden" />
+
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary">Login</button>
+			</div>
+		</form>
+		<div class="social-login-section">
+			<h6>or login using</h6>
+
+			<!-- Google Login Button -->
+			@* <a class="btn btn-primary btn-social btn-google" href="~/Account/ExternalLogin?provider=Google&returnUrl=@Model.ReturnUrl">
+			Login with Google
+			</a> *@
+
+			<!-- TikTok Login Button -->
+			<a class="btn btn-primary btn-social btn-tiktok" href='@Url.Action("RedirectToTikTokLogin", "Home", new {returnUrl = Model.ReturnUrl})'>
+				Login with TikTok
+			</a>
+		</div>
+		<div class="social-login-section">
+			<button class="btn btn-secondary btn-social" @@click="switchComponent('Register')">Switch to Register</button>
+		</div>
+	</div>
+	<div class="login-form" v-show="currentComponent == 'Register'">
+		<form asp-action="Register" method="post">
+			<div class="form-group">
+				<label asp-for="Username" class="control-label"></label>
+				<input asp-for="Username" class="form-control" />
+				<span asp-validation-for="Username" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<label asp-for="Password" class="control-label"></label>
+				<input asp-for="Password" type="password" class="form-control" />
+				<span asp-validation-for="Password" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="ConfirmPassword" class="control-label"></label>
+				<input asp-for="ConfirmPassword" type="password" class="form-control" />
+				<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+			</div>
+
+			<!-- Hidden field to capture ReturnUrl -->
+			<input asp-for="ReturnUrl" type="hidden" />
+
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary">Register</button>
+			</div>
+		</form>
+		<div class="social-login-section">
+			<button class="btn btn-secondary btn-social" @@click="switchComponent('Login')">Switch to Login</button>
+		</div>
+	</div>
+</div>

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
 </head>
 @await RenderSectionAsync("Styles", required: false)
 <!-- Google tag (gtag.js) -->
@@ -42,12 +43,12 @@
 				{
 					<div>
 						<span class="user-name">@userName</span>
-						<a href='' class="btn btn-secondary" style="padding-left: 10px;">Sign Off</a>
+						<a href='@Url.Action("Logout", "Home")' class="btn btn-secondary" style="padding-left: 10px;">Sign Off</a>
 					</div>
 				}
 				else
 				{
-					<a href='@Url.Action("RedirectToTikTokLogin", "Home")' class="btn btn-primary btn-lg">Tik-tok login</a>
+					<a href='@Url.Action("Login", "Home")' class="btn btn-primary btn-lg">Login</a>
 				}
 			</div>
 		</header>

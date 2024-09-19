@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Caching.Memory;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.TikTok;
 using System.Net;
@@ -11,10 +12,12 @@ namespace Polufabrikkat.Core.ApiClients
 	public class TikTokApiClient : ITikTokApiClient
 	{
 		private readonly HttpClient _httpClient;
+		private readonly IMemoryCache _memoryCache;
 
-		public TikTokApiClient(HttpClient httpClient)
+		public TikTokApiClient(HttpClient httpClient, IMemoryCache memoryCache)
 		{
 			_httpClient = httpClient;
+			_memoryCache = memoryCache;
 		}
 
 		public async Task<AuthTokenData> GetAuthToken(string decodedCode, string redirectUrl)
@@ -46,11 +49,15 @@ namespace Polufabrikkat.Core.ApiClients
 			return content;
 		}
 
-		public string GetLoginUrl(string redirectUrl)
+		public string GetLoginUrl(string redirectUrl, string returnUrl)
 		{
 			var clientKey = "***REMOVED***"; // from tiktok dev
 			var scope = "user.info.basic,video.publish,video.upload";
 			var uniqueIdentificatorState = Guid.NewGuid().ToString("N");
+			if (!string.IsNullOrEmpty(returnUrl))
+			{
+				_memoryCache.Set(uniqueIdentificatorState, returnUrl, TimeSpan.FromMinutes(2));
+			}
 			var responseType = "code";
 			var queryString = new Dictionary<string, string>()
 			{

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
+using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Options;
+using Polufabrikkat.Site.Services;
 
 namespace Polufabrikkat.Site
 {
@@ -22,6 +24,7 @@ namespace Polufabrikkat.Site
 					});
 			});
 			services.AddHttpClient();
+			services.AddMemoryCache();
 
 			services.Configure<FileUploadOptions>(x =>
 			{
@@ -31,9 +34,11 @@ namespace Polufabrikkat.Site
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie(options =>
 				{
-					options.LoginPath = "/Home/RedirectToTikTokLogin";
-
+					options.LoginPath = "/Home/Login";
+					options.LogoutPath = "/Home/Logout";
 				});
+
+			services.AddScoped<IUserService, UserService>();
 
 			return services;
 		}
