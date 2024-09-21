@@ -6,7 +6,7 @@ using Polufabrikkat.Site.Options;
 namespace Polufabrikkat.Site.Controllers
 {
 	[Authorize]
-	public class PostingController : Controller
+	public class PostingController : BaseController
 	{
 		private readonly FileUploadOptions _fileUploadOptions;
 

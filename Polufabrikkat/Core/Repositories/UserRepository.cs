@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using Polufabrikkat.Core.Extentions;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models;
+using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Core.Options;
 
 namespace Polufabrikkat.Core.Repositories
@@ -29,18 +30,51 @@ namespace Polufabrikkat.Core.Repositories
 
 		public Task<User> GetUserByTikTokId(string unionId)
 		{
-			var filter = Builders<User>.Filter.Eq(u => u.TikTokUser.UserInfo.UnionId, unionId);
+			var filter = Builders<User>.Filter.ElemMatch(u => u.TikTokUsers, t => t.UserInfo.UnionId == unionId);
 			var userCollection = _database.GetCollection<User>();
-			var user =  userCollection.Find(filter).FirstOrDefaultAsync();
+			var user = userCollection.Find(filter).FirstOrDefaultAsync();
 			return user;
 		}
 
-		public async Task<User> GetUserByUsername(string username)
+		public Task<User> GetUserByUsername(string username)
 		{
 			var filter = Builders<User>.Filter.Eq(u => u.Username, username);
 			var userCollection = _database.GetCollection<User>();
-			var user = await userCollection.Find(filter).FirstOrDefaultAsync();
+			var user = userCollection.Find(filter).FirstOrDefaultAsync();
 			return user;
+		}
+
+		public Task<User> GetUserById(string userId)
+		{
+			var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
+			var userCollection = _database.GetCollection<User>();
+			var user = userCollection.Find(filter).FirstOrDefaultAsync();
+			return user;
+		}
+
+		public Task UpdateUser(User user)
+		{
+			var filter = Builders<User>.Filter.Eq(u => u.Id, user.Id);
+			var userCollection = _database.GetCollection<User>();
+
+			return userCollection.ReplaceOneAsync(filter, user);
+		}
+
+		public Task RemoveTikTokUser(string userId, string tikTokUserUnionId)
+		{
+			var userCollection = _database.GetCollection<User>();
+			var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
+			var update = Builders<User>.Update.PullFilter(u => u.TikTokUsers, t => t.UserInfo.UnionId == tikTokUserUnionId);
+			return userCollection.UpdateOneAsync(filter, update);
+
+		}
+
+		public Task AddTikTokUser(string userId, TikTokUser tikTokUser)
+		{
+			var userCollection = _database.GetCollection<User>();
+			var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
+			var update = Builders<User>.Update.Push(u => u.TikTokUsers, tikTokUser);
+			return userCollection.UpdateOneAsync(filter, update);
 		}
 	}
 }

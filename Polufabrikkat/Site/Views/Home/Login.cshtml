@@ -1,4 +1,5 @@
-﻿@using Polufabrikkat.Site.Models;
+﻿@using Polufabrikkat.Core.Models.TikTok
+@using Polufabrikkat.Site.Models;
 @model LoginModel
 
 @{
@@ -57,7 +58,7 @@
 			</a> *@
 
 			<!-- TikTok Login Button -->
-			<a class="btn btn-primary btn-social btn-tiktok" href='@Url.Action("RedirectToTikTokLogin", "Home", new {returnUrl = Model.ReturnUrl})'>
+			<a class="btn btn-primary btn-social btn-tiktok" href='@Url.Action("RedirectToTikTokLogin", "Home", new {returnUrl = Model.ReturnUrl, callbackStrategy = CallbackStrategy.Login})'>
 				Login with TikTok
 			</a>
 		</div>

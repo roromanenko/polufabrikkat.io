@@ -2,7 +2,7 @@
 
 namespace Polufabrikkat.Site.Models
 {
-	public class LoginModel
+	public class LoginModel : BaseModel
 	{
 		[Required(ErrorMessage = "Username is required.")]
 		public string Username { get; set; }
@@ -13,6 +13,5 @@ namespace Polufabrikkat.Site.Models
 		[Display(Name = "Confirm Password")]
 		public string ConfirmPassword { get; set; }
 		public string ReturnUrl { get; set; }
-        public string Error { get; set; }
     }
 }

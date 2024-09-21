@@ -42,7 +42,7 @@
 				@if (authorized)
 				{
 					<div>
-						<span class="user-name">@userName</span>
+						<a class="user-name" href='@Url.Action("Index", "User")'>@userName</a>
 						<a href='@Url.Action("Logout", "Home")' class="btn btn-secondary" style="padding-left: 10px;">Sign Off</a>
 					</div>
 				}

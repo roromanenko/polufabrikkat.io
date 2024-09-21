@@ -25,6 +25,7 @@ namespace Polufabrikkat.Site
 			});
 			services.AddHttpClient();
 			services.AddMemoryCache();
+			services.AddAutoMapper(typeof(SiteMapperProfile));
 
 			services.Configure<FileUploadOptions>(x =>
 			{

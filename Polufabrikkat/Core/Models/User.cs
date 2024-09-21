@@ -9,6 +9,6 @@ namespace Polufabrikkat.Core.Models
 		public string Id { get; set; }
 		public string Username { get; set; }
 		public string PasswordHash { get; set; }
-		public TikTokUser TikTokUser { get; set; }
+		public List<TikTokUser> TikTokUsers { get; set; } = new List<TikTokUser>();
 	}
 }

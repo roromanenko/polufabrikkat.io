@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Polufabrikkat.Core.Interfaces;
@@ -9,7 +7,6 @@ using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Models;
 using System.Diagnostics;
-using System.Security.Claims;
 using System.Web;
 
 namespace Polufabrikkat.Site.Controllers
@@ -91,7 +88,7 @@ namespace Polufabrikkat.Site.Controllers
 				}
 				return RedirectToAction("Index", "Posting");
 			}
-			catch(ArgumentException ex)
+			catch (ArgumentException ex)
 			{
 				model.Error = ex.Message;
 				return View(nameof(Login), model);
@@ -104,11 +101,11 @@ namespace Polufabrikkat.Site.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
-		public IActionResult RedirectToTikTokLogin([FromQuery] string returnUrl)
+		public IActionResult RedirectToTikTokLogin([FromQuery] string returnUrl, [FromQuery] CallbackStrategy? callbackStrategy)
 		{
 			Request.IsHttps = true;
 			var redirectUrl = Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
-			var loginUrl = _tikTokApiClient.GetLoginUrl(redirectUrl, returnUrl);
+			var loginUrl = _tikTokApiClient.GetLoginUrl(redirectUrl, returnUrl, callbackStrategy ?? CallbackStrategy.Login);
 			return Redirect(loginUrl);
 		}
 
@@ -121,16 +118,31 @@ namespace Polufabrikkat.Site.Controllers
 			var tokenData = await _tikTokApiClient.GetAuthToken(HttpUtility.UrlDecode(response.Code), redirectUrl);
 			var userInfo = await _tikTokApiClient.GetUserInfo(tokenData);
 
-			var user = await _userService.GetUserByTikTokId(userInfo.UnionId);
-			string returnUrl = null;
+			TikTokHandleCallback tikTokHandleCallback = null;
 			if (!string.IsNullOrEmpty(response.State))
 			{
-				if (_memoryCache.TryGetValue(response.State.ToString(), out returnUrl))
+				if (_memoryCache.TryGetValue(response.State.ToString(), out tikTokHandleCallback))
 				{
 					_memoryCache.Remove(response.State.ToString());
 				}
 			}
 
+			if (tikTokHandleCallback == null)
+			{
+				throw new Exception("Cannot process TikTok login");
+			}
+
+			return tikTokHandleCallback.CallbackStrategy switch
+			{
+				CallbackStrategy.Login => await TikTokLogin(userInfo, tikTokHandleCallback.ReturnUrl),
+				CallbackStrategy.AddTikTokUser => await AddTikTokUser(tikTokHandleCallback.ReturnUrl, tokenData, userInfo),
+				_ => await TikTokLogin(userInfo, tikTokHandleCallback.ReturnUrl)
+			};
+		}
+
+		private async Task<IActionResult> TikTokLogin(UserInfo userInfo, string returnUrl)
+		{
+			var user = await _userService.GetUserByTikTokId(userInfo.UnionId);
 			if (user != null)
 			{
 				await LoginUser(user);
@@ -147,6 +159,33 @@ namespace Polufabrikkat.Site.Controllers
 				ReturnUrl = returnUrl
 			};
 			return View(nameof(Login), model);
+		}
+
+		private async Task<IActionResult> AddTikTokUser(string returnUrl, AuthTokenData tokenData, UserInfo userInfo)
+		{
+			if (!User.Identity.IsAuthenticated)
+			{
+				var model = new LoginModel
+				{
+					ReturnUrl = returnUrl
+				};
+				return View(nameof(Login), model);
+			}
+
+			try
+			{
+				await _userService.AddTikTokUser(UserId, new TikTokUser
+				{
+					AuthTokenData = tokenData,
+					UserInfo = userInfo
+				});
+
+				return RedirectToAction("Index", "User");
+			}
+			catch(ArgumentException ex)
+			{
+				return RedirectToAction("Index", "User", new { Error = ex.Message });
+			}
 		}
 	}
 }

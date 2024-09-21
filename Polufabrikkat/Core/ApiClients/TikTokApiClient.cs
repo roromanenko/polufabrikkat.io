@@ -49,15 +49,11 @@ namespace Polufabrikkat.Core.ApiClients
 			return content;
 		}
 
-		public string GetLoginUrl(string redirectUrl, string returnUrl)
+		public string GetLoginUrl(string redirectUrl, string returnUrl, CallbackStrategy callbackStrategy)
 		{
 			var clientKey = "***REMOVED***"; // from tiktok dev
 			var scope = "user.info.basic,video.publish,video.upload";
 			var uniqueIdentificatorState = Guid.NewGuid().ToString("N");
-			if (!string.IsNullOrEmpty(returnUrl))
-			{
-				_memoryCache.Set(uniqueIdentificatorState, returnUrl, TimeSpan.FromMinutes(2));
-			}
 			var responseType = "code";
 			var queryString = new Dictionary<string, string>()
 			{
@@ -67,6 +63,12 @@ namespace Polufabrikkat.Core.ApiClients
 				["state"] = uniqueIdentificatorState,
 				["response_type"] = responseType
 			};
+
+			_memoryCache.Set(uniqueIdentificatorState, new TikTokHandleCallback
+			{
+				CallbackStrategy = callbackStrategy,
+				ReturnUrl = returnUrl,
+			}, TimeSpan.FromMinutes(2));
 
 			var authorizationUrl = "https://www.tiktok.com/v2/auth/authorize/";
 			var url = new Uri(QueryHelpers.AddQueryString(authorizationUrl, queryString));

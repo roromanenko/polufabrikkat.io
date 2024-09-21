@@ -1,4 +1,5 @@
 ﻿using Polufabrikkat.Core.Models;
+using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Site.Models;
 
 namespace Polufabrikkat.Site.Interfaces
@@ -8,5 +9,9 @@ namespace Polufabrikkat.Site.Interfaces
 		Task<User> VerifyUserLogin(LoginModel request);
 		Task<User> RegisterUser(LoginModel model);
 		Task<User> GetUserByTikTokId(string unionId);
+		Task<User> GetUserById(string userId);
+		Task UpdateUser(User user);
+		Task RemoveTikTokUser(string userId, string tikTokUserUnionId);
+		Task AddTikTokUser(string userId, TikTokUser tikTokUser);
 	}
 }

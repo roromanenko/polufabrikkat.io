@@ -1,0 +1,47 @@
+﻿@using Polufabrikkat.Core.Models.TikTok
+@using Polufabrikkat.Site.Models.User;
+@using System.Text.Json
+
+@model UserViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+@section Styles {
+	<link rel="stylesheet" href="~/css/pages/user.css" asp-append-version="true" />
+}
+
+@section Scripts
+{
+	<script src="~/js/pages/user/user.js" asp-append-version="true"></script>
+}
+
+<div class="container">
+	<h2>@Model.User.Username</h2>
+
+	<a href='@Url.Action("RedirectToTikTokLogin", "Home", new { callbackStrategy = CallbackStrategy.AddTikTokUser })' class="btn btn-primary btn-lg">Add TikTok User</a>
+
+	<div id="tiktok-users-app">
+		<h3>Current TikTok Users</h3>
+		<ul>
+			<li v-for="user in tiktokUsers" :key="user.id">
+				<span>{{user.displayName}}</span>
+
+				<!-- Remove button with loading state -->
+				<button class="btn btn-danger btn-sm float-right"
+						@@click="user.remove()"
+						:disabled="user.loading">
+					Remove
+				</button>
+			</li>
+		</ul>
+
+		<p v-if="!tiktokUsers.length">No TikTok Users added yet.</p>
+	</div>
+</div>
+
+<script>
+	var removeTikTokUserUrl = '@Url.Action("RemoveTikTokUser", "User")';
+	var modelTikTokUsers = @Html.Raw(JsonSerializer.Serialize(Model.User.TikTokUsers, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+</script>

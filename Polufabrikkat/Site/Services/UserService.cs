@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Amazon.Runtime.Internal;
+using Microsoft.AspNetCore.Identity;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models;
+using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Models;
 
@@ -55,6 +57,25 @@ namespace Polufabrikkat.Site.Services
 		public Task<User> GetUserByTikTokId(string unionId)
 		{
 			return _userRepository.GetUserByTikTokId(unionId);
+		}
+
+		public async Task<User> GetUserById(string userId)
+		{
+			return await _userRepository.GetUserById(userId);
+		}
+
+		public async Task UpdateUser(User user)
+		{
+			await _userRepository.UpdateUser(user);
+		}
+
+		public Task RemoveTikTokUser(string userId, string tikTokUserUnionId)
+		{
+			return _userRepository.RemoveTikTokUser(userId, tikTokUserUnionId);
+		}
+		public Task AddTikTokUser(string userId, TikTokUser tikTokUser)
+		{
+			return _userRepository.AddTikTokUser(userId, tikTokUser);
 		}
 	}
 }
