@@ -4,5 +4,6 @@
 	{
 		public UserInfo UserInfo { get; set; }
 		public AuthTokenData AuthTokenData { get; set; }
+		public QueryCreatorInfo QueryCreatorInfo { get; set; }
 	}
 }

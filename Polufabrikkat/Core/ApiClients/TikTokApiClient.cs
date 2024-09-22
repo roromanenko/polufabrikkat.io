@@ -95,5 +95,21 @@ namespace Polufabrikkat.Core.ApiClients
 
 			return content.Data.User;
 		}
+
+		public async Task<QueryCreatorInfo> GetQueryCreatorInfo(AuthTokenData authData)
+		{
+			var url = "https://open.tiktokapis.com/v2/post/publish/creator_info/query/";
+
+			using var request = new HttpRequestMessage(HttpMethod.Post, url);
+			request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(authData.TokenType, authData.AccessToken);
+
+			using var res = await _httpClient.SendAsync(request);
+			var content = await res.Content.ReadFromJsonAsync<QueryCreatorInfoResponse>(new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+			});
+
+			return content.Data;
+		}
 	}
 }

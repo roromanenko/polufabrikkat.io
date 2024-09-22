@@ -22,6 +22,7 @@ namespace Polufabrikkat.Core
 			});
 
 			services.Configure<MongoDbOptions>(configuration.GetSection(nameof(MongoDbOptions)));
+			services.Configure<TikTokOptions>(configuration.GetSection(nameof(TikTokOptions)));
 			services.AddScoped<ITikTokApiClient, TikTokApiClient>();
 			services.AddScoped<IUserRepository, UserRepository>();
 

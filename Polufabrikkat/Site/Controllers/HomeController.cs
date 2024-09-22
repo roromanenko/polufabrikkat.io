@@ -156,7 +156,8 @@ namespace Polufabrikkat.Site.Controllers
 
 			var model = new LoginModel
 			{
-				ReturnUrl = returnUrl
+				ReturnUrl = returnUrl,
+				Error = "You should register and add TikTok user to registered user to be available login via TikTok"
 			};
 			return View(nameof(Login), model);
 		}
