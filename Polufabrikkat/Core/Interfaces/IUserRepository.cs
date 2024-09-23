@@ -1,10 +1,9 @@
-﻿
-using Polufabrikkat.Core.Models;
+﻿using Polufabrikkat.Core.Models.Entities;
 using Polufabrikkat.Core.Models.TikTok;
 
 namespace Polufabrikkat.Core.Interfaces
 {
-	public interface IUserRepository
+    public interface IUserRepository
 	{
 		Task<User> CreateUser(User newUser);
 		Task<User> GetUserById(string userId);

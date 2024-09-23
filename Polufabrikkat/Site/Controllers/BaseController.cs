@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Polufabrikkat.Core.Models;
+using Polufabrikkat.Core.Models.Entities;
 using System.Security.Claims;
 
 namespace Polufabrikkat.Site.Controllers
 {
-	public abstract class BaseController : Controller
+    public abstract class BaseController : Controller
 	{
 		protected Task LoginUser(User user)
 		{
 			var claims = new List<Claim>
 			{
 				new Claim(ClaimTypes.Name, user.Username),
-				new Claim(ClaimTypes.NameIdentifier, user.Id),
+				new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
 			};
 			if (user.Roles != null && user.Roles.Any())
 			{

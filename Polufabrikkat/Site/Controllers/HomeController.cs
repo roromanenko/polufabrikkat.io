@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Polufabrikkat.Core.Interfaces;
-using Polufabrikkat.Core.Models;
+using Polufabrikkat.Core.Models.Entities;
 using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Models;
@@ -11,7 +11,7 @@ using System.Web;
 
 namespace Polufabrikkat.Site.Controllers
 {
-	[AllowAnonymous]
+    [AllowAnonymous]
 	public class HomeController : BaseController
 	{
 		private readonly ILogger<HomeController> _logger;

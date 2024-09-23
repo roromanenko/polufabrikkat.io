@@ -1,12 +1,15 @@
-﻿using Polufabrikkat.Core.Models.TikTok;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using Polufabrikkat.Core.Models.TikTok;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Polufabrikkat.Core.Models
+namespace Polufabrikkat.Core.Models.Entities
 {
 	[Table("users")]
 	public class User
 	{
-		public string Id { get; set; }
+		[BsonId]
+		public ObjectId Id { get; set; }
 		public string Username { get; set; }
 		public string PasswordHash { get; set; }
 		public List<string> Roles { get; set; } = new List<string>();

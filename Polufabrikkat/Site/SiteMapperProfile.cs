@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Polufabrikkat.Core.Models;
+using Polufabrikkat.Core.Models.Entities;
 using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Site.Models.User;
 
 namespace Polufabrikkat.Site
 {
-	public class SiteMapperProfile : Profile
+    public class SiteMapperProfile : Profile
 	{
 		public SiteMapperProfile()
 		{
