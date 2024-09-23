@@ -1,0 +1,27 @@
+﻿@section Scripts
+{
+	<script src="~/js/pages/admin/admin.js" asp-append-version="true"></script>
+}
+
+<div class="container" id="admin-app">
+	<div>
+		<!-- File Input -->
+		<input type="file" @@change="onUploadFileSelected" />
+
+		<!-- Button to upload the selected file -->
+		<button @@click="uploadFile" :disabled="!selectedUploadFile">Upload file</button>
+	</div>
+	<div>
+		<button @@click="getAllFiles()">Get uploaded files</button>
+		<div>
+			<ul v-if="fileNames.length">
+				<li v-for="(item, index) in fileNames" :key="index">{{ item }}</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<script>
+	var getAllFilesUrl = '@Url.Action("GetAllFiles", "Admin")';
+	var uploadFileUrl = '@Url.Action("UploadFile", "Admin")';
+</script>

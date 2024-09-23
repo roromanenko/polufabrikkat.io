@@ -1,5 +1,6 @@
 ﻿using Amazon.Runtime.Internal;
 using Microsoft.AspNetCore.Identity;
+using Polufabrikkat.Core.Constants;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models;
 using Polufabrikkat.Core.Models.TikTok;
@@ -50,6 +51,7 @@ namespace Polufabrikkat.Site.Services
 				Username = model.Username,
 				PasswordHash = _passwordHasher.HashPassword(null, model.Password),
 				Id = Guid.NewGuid().ToString(),
+				Roles = new List<string> { AppRoles.User }
 			};
 			return await _userRepository.CreateUser(newUser);
 		}

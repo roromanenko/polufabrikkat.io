@@ -43,7 +43,7 @@ namespace Polufabrikkat.Site.Controllers
 			var user = await _userService.GetUserByTikTokId(unionId);
 			if (user == null)
 			{
-				return Json(new { success = false, error = "TikTok user not found" });
+				return BadRequest(new { error = "TikTok user not found" });
 			}
 
 			var tiktokUser = user.TikTokUsers.First(x => x.UserInfo.UnionId == unionId);
@@ -59,14 +59,6 @@ namespace Polufabrikkat.Site.Controllers
 			await _userService.UpdateUser(user);
 
 			return Ok();
-		}
-
-		[HttpPost]
-		public async Task UploadFile()
-		{
-			var file = Request.Form.Files.First();
-			using var writeStream = System.IO.File.Create(Path.Combine(_fileUploadOptions.FileUploadPath, file.FileName));
-			await file.CopyToAsync(writeStream);
 		}
 	}
 }

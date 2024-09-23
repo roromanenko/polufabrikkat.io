@@ -1,6 +1,8 @@
-﻿@{
+﻿@using Polufabrikkat.Core.Constants
+@{
 	var authorized = User.Identity.IsAuthenticated;
 	var userName = User.Identity.Name;
+	var isAdmin = User.IsInRole(AppRoles.Admin);
 }
 
 <!DOCTYPE html>
@@ -36,6 +38,10 @@
 						<a class="active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 						<a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
 						<a asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
+						@if (isAdmin)
+						{
+							<a asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+						}
 					</ul>
 				</nav>
 

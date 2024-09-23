@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Polufabrikkat.Core.Models;
 using System.Security.Claims;
@@ -15,6 +15,11 @@ namespace Polufabrikkat.Site.Controllers
 				new Claim(ClaimTypes.Name, user.Username),
 				new Claim(ClaimTypes.NameIdentifier, user.Id),
 			};
+			if (user.Roles != null && user.Roles.Any())
+			{
+				claims.AddRange(user.Roles.Select(x => new Claim(ClaimTypes.Role, x)));
+			}
+
 			var claimsIdentity = new ClaimsIdentity(claims, "Login");
 			return HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 		}
