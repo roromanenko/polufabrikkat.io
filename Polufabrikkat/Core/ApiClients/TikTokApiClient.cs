@@ -3,7 +3,9 @@ using Microsoft.Extensions.Caching.Memory;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.TikTok;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Web;
 
@@ -46,6 +48,7 @@ namespace Polufabrikkat.Core.ApiClients
 			{
 				PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
 			});
+			content.RefreshedDate = DateTime.UtcNow;
 			return content;
 		}
 
@@ -108,8 +111,56 @@ namespace Polufabrikkat.Core.ApiClients
 			{
 				PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
 			});
+			if (content.Error?.Code != "ok")
+			{
+				throw TikTokApiExceptions.ThrowExceptionFromCode(content.Error.Code);
+			}
 
 			return content.Data;
+		}
+
+		public async Task<string> PostPhoto(AuthTokenData authData, PostPhotoRequest postRequest)
+		{
+			var url = "https://open.tiktokapis.com/v2/post/publish/content/init/";
+
+			using var request = new HttpRequestMessage(HttpMethod.Post, url);
+			request.Headers.Authorization = new AuthenticationHeaderValue(authData.TokenType, authData.AccessToken);
+			request.Content = JsonContent.Create(postRequest, new MediaTypeHeaderValue("application/json"), new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+			});
+			using var res = await _httpClient.SendAsync(request);
+
+			return await res.Content.ReadAsStringAsync();
+		}
+
+		public async Task<AuthTokenData> RefreshTokenData(AuthTokenData authTokenData)
+		{
+			var accessTokenUrl = "https://open.tiktokapis.com/v2/oauth/token/";
+
+			var clientKey = "***REMOVED***"; // from tiktok dev
+			var clientSecret = "***REMOVED***";
+
+			var queryString = new Dictionary<string, string>()
+			{
+				["client_key"] = clientKey,
+				["client_secret"] = clientSecret,
+				["grant_type"] = "refresh_token",
+				["refresh_token"] = authTokenData.RefreshToken,
+			};
+
+			using var request = new HttpRequestMessage(HttpMethod.Post, accessTokenUrl)
+			{
+				Content = new FormUrlEncodedContent(queryString),
+			};
+			using var res = await _httpClient.SendAsync(request);
+
+			var content = await res.Content.ReadFromJsonAsync<AuthTokenData>(new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+			});
+			content.RefreshedDate = DateTime.UtcNow;
+			return content;
 		}
 	}
 }

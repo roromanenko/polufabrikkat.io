@@ -17,18 +17,104 @@
 }
 
 <div class="container" id="posting-app">
-	<select v-model="selectedTikTokUser" @@change="onUserChange">
-		<option value="">-- Select a user --</option>
-		<option v-for="user in tiktokUsers" :key="user.unionId" :value="user">
-			{{ user.displayName }}
-		</option>
-	</select>
+	<label>
+		Select TikTok user to create a post
+		<select v-model="selectedTikTokUser" @@change="onUserChange">
+			<option value="">-- Select a user --</option>
+			<option v-for="user in tiktokUsers" :key="user.unionId" :value="user">
+				{{ user.displayName }}
+			</option>
+		</select>
+	</label>
 	<div>
-		<span>{{selectedTikTokUser.displayName}}</span>
+		<label v-if="selectedTikTokUser">
+			Selected User:
+			<span>{{selectedTikTokUser.displayName}}</span>
+		</label>
 	</div>
+	<div v-if="selectedTikTokUser.queryCreatorInfo">
+		<div class="creator-info-box">
+			<h4>Creator Information</h4>
+
+			<div class="info-group">
+				<label>Creator Avatar:</label>
+				<img :src="selectedTikTokUser.queryCreatorInfo.creatorAvatarUrl" alt="Creator Avatar" />
+			</div>
+
+			<div class="info-group">
+				<label>Creator Nickname:</label>
+				<span>{{ selectedTikTokUser.queryCreatorInfo.creatorNickname }}</span>
+			</div>
+
+			<div class="info-group">
+				<label>Creator Username:</label>
+				<span>{{ selectedTikTokUser.queryCreatorInfo.creatorUsername }}</span>
+			</div>
+
+			<div class="info-group">
+				<label>Duet Disabled:</label>
+				<span>{{ selectedTikTokUser.queryCreatorInfo.duetDisabled ? 'Yes' : 'No' }}</span>
+			</div>
+
+			<div class="info-group">
+				<label>Max Video Post Duration (Sec):</label>
+				<span>{{ selectedTikTokUser.queryCreatorInfo.maxVideoPostDurationSec }}</span>
+			</div>
+
+			<div class="info-group">
+				<label>Privacy Level Options:</label>
+				<select>
+					<option v-for="privacyLevelOptions in selectedTikTokUser.queryCreatorInfo.privacyLevelOptions" :key="privacyLevelOptions">
+						{{privacyLevelOptions}}
+					</option>
+				</select>
+			</div>
+
+			<div class="info-group">
+				<label>Stitch Disabled:</label>
+				<span>{{ selectedTikTokUser.queryCreatorInfo.stitchDisabled ? 'Yes' : 'No' }}</span>
+			</div>
+
+			<div class="info-group">
+				<label>Comment Disabled:</label>
+				<span>{{ selectedTikTokUser.queryCreatorInfo.commentDisabled ? 'Yes' : 'No' }}</span>
+			</div>
+		</div>
+		<div>
+			<h3>Create new post</h3>
+			<form v-on:submit.prevent="uploadFiles">
+				<input type="file" multiple @@change="handleFileChange" />
+				<input type="text" v-model="title" placeholder="Title" />
+				<input type="text" v-model="description" placeholder="Description" />
+				<label>
+					Privacy Level
+					<select v-model="privacyLevel">
+						<option v-for="privacyLevelOptions in selectedTikTokUser.queryCreatorInfo.privacyLevelOptions" :key="privacyLevelOptions">
+							{{privacyLevelOptions}}
+						</option>
+					</select>
+				</label>
+				<label>
+					Disable Comment
+					<input type="checkbox" v-model="disableComment" />
+				</label>
+				<label>
+					Auto Add Music
+					<input type="checkbox" v-model="autoAddMusic" />
+				</label>
+				<label>
+					Photo Cover Index
+					<input type="number" v-model="photoCoverIndex" />
+				</label>
+				<button type="submit">Upload</button>
+			</form>
+		</div>
+	</div>
+
 </div>
 
 <script>
 	var selectTikTokUserUrl = '@Url.Action("SelectTikTokUser", "Posting")';
 	var modelTikTokUsers = @Html.Raw(JsonSerializer.Serialize(Model.TikTokUsers, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+	var createPostUrl = '@Url.Action("CreateNewPhotoPost", "Posting")';
 </script>

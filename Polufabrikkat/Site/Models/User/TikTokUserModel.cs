@@ -4,5 +4,6 @@
 	{
 		public string UnionId { get; set; }
 		public string DisplayName { get; set; }
-	}
+        public QueryCreatorInfoModel QueryCreatorInfo { get; set; }
+    }
 }

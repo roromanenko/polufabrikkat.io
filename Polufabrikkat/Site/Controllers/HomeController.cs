@@ -134,17 +134,21 @@ namespace Polufabrikkat.Site.Controllers
 
 			return tikTokHandleCallback.CallbackStrategy switch
 			{
-				CallbackStrategy.Login => await TikTokLogin(userInfo, tikTokHandleCallback.ReturnUrl),
+				CallbackStrategy.Login => await TikTokLogin(userInfo, tokenData, tikTokHandleCallback.ReturnUrl),
 				CallbackStrategy.AddTikTokUser => await AddTikTokUser(tikTokHandleCallback.ReturnUrl, tokenData, userInfo),
-				_ => await TikTokLogin(userInfo, tikTokHandleCallback.ReturnUrl)
+				_ => await TikTokLogin(userInfo, tokenData, tikTokHandleCallback.ReturnUrl)
 			};
 		}
 
-		private async Task<IActionResult> TikTokLogin(UserInfo userInfo, string returnUrl)
+		private async Task<IActionResult> TikTokLogin(UserInfo userInfo, AuthTokenData tokenData, string returnUrl)
 		{
 			var user = await _userService.GetUserByTikTokId(userInfo.UnionId);
 			if (user != null)
 			{
+				var tiktokUser = user.TikTokUsers.First(x => x.UserInfo.UnionId == userInfo.UnionId);
+				tiktokUser.AuthTokenData = tokenData;
+				await _userService.UpdateUser(user);
+
 				await LoginUser(user);
 				if (!string.IsNullOrEmpty(returnUrl))
 				{

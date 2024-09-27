@@ -9,5 +9,6 @@
 		public string RefreshToken { get; set; }
 		public string Scope { get; set; }
 		public string TokenType { get; set; } = "Bearer";
-	}
+		public DateTime RefreshedDate { get; set; } = DateTime.UtcNow;
+    }
 }

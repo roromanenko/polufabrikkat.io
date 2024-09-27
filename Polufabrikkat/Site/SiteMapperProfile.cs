@@ -13,6 +13,7 @@ namespace Polufabrikkat.Site
 			CreateMap<TikTokUser, TikTokUserModel>()
 				.ForMember(x => x.DisplayName, act => act.MapFrom(scr => scr.UserInfo.DisplayName))
 				.ForMember(x => x.UnionId, act => act.MapFrom(scr => scr.UserInfo.UnionId));
+			CreateMap<QueryCreatorInfo, QueryCreatorInfoModel>();
 		}
 	}
 }

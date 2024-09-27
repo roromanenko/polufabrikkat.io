@@ -2,6 +2,6 @@
 {
 	public class TikTokOptions
 	{
-		public TimeSpan RefreshQueryCreatorInfoInterval { get; set; } = TimeSpan.FromDays(1);
+		public TimeSpan RefreshQueryCreatorInfoInterval { get; set; } = TimeSpan.FromHours(2);
 	}
 }

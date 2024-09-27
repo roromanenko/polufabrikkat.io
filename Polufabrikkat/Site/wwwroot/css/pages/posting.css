@@ -1,1 +1,27 @@
-﻿
+﻿.creator-info-box {
+	/*display: flex;*/
+}
+
+.info-group {
+	margin-bottom: 5px;
+}
+
+.info-group label {
+	font-weight: bold;
+	display: block;
+	margin-bottom: 5px;
+	color: #555;
+}
+
+.info-group span {
+	display: block;
+	padding: 3px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.info-group img {
+	max-width: 150px;
+	border-radius: 5px;
+	margin-top: 10px;
+}
