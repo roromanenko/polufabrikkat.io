@@ -9,10 +9,10 @@
 		<input type="file" @@change="onUploadFileSelected" />
 
 		<!-- Button to upload the selected file -->
-		<button @@click="uploadFile" :disabled="!selectedUploadFile">Upload file</button>
+		<button @@click="uploadFile" :disabled="!selectedUploadFile">Upload file (to mongo)</button>
 	</div>
 	<div>
-		<button @@click="getAllFiles()">Get uploaded files</button>
+		<button @@click="getAllFiles()">Get uploaded files (from local storage)</button>
 		<div>
 			<ul v-if="fileNames.length">
 				<li v-for="(item, index) in fileNames" :key="index">{{ item }}</li>

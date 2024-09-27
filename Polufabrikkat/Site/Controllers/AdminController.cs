@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Polufabrikkat.Core.Constants;
+using Polufabrikkat.Core.Interfaces;
+using Polufabrikkat.Core.Repositories;
 using Polufabrikkat.Site.Options;
 
 namespace Polufabrikkat.Site.Controllers
@@ -10,10 +12,12 @@ namespace Polufabrikkat.Site.Controllers
 	public class AdminController : BaseController
 	{
 		private readonly FileUploadOptions _fileUploadOptions;
+		private readonly IFileRepository _fileRepository;
 
-		public AdminController(IOptions<FileUploadOptions> fileUploadOptions)
+		public AdminController(IOptions<FileUploadOptions> fileUploadOptions, IFileRepository fileRepository)
 		{
 			_fileUploadOptions = fileUploadOptions.Value;
+			_fileRepository = fileRepository;
 		}
 
 		public IActionResult Index()
@@ -30,22 +34,31 @@ namespace Polufabrikkat.Site.Controllers
 		[HttpPost]
 		public async Task<IActionResult> UploadFile(IFormFile file)
 		{
+			// 10 MB size limit in bytes
+			const long MaxFileSize = 10 * 1024 * 1024;
+
 			// Check if a file was provided
 			if (file == null || file.Length == 0)
 			{
 				return BadRequest("No file uploaded.");
 			}
 
-			// Create the full file path
-			var filePath = Path.Combine(_fileUploadOptions.FileUploadPath, file.FileName);
-
-			// Save the file to the server
-			using (var stream = new FileStream(filePath, FileMode.Create))
+			if (file.Length > MaxFileSize)
 			{
-				await file.CopyToAsync(stream);
+				return BadRequest("File size exceeds 10 MB limit.");
 			}
 
-			return Ok(new { fileName = file.FileName });
+			using var memoryStream = new MemoryStream();
+			await file.CopyToAsync(memoryStream);
+
+			var newFileId = await _fileRepository.SaveFile(new Core.Models.Entities.File
+			{
+				ContentType = file.ContentType,
+				FileName = file.FileName,
+				FileData = memoryStream.ToArray()
+			});
+
+			return Ok(new { fileName = file.FileName, newFileId });
 		}
 	}
 }

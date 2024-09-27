@@ -51,7 +51,7 @@ namespace Polufabrikkat.Site.Controllers
 			}
 
 			var tiktokUser = user.TikTokUsers.First(x => x.UserInfo.UnionId == unionId);
-			if(tiktokUser.QueryCreatorInfo != null
+			if (tiktokUser.QueryCreatorInfo != null
 				&& ((DateTime.UtcNow - tiktokUser.QueryCreatorInfo.RefreshedDateTime) < _tikTokOptions.RefreshQueryCreatorInfoInterval))
 			{
 				return Json(_mapper.Map<QueryCreatorInfoModel>(tiktokUser.QueryCreatorInfo));
@@ -79,14 +79,31 @@ namespace Polufabrikkat.Site.Controllers
 		[HttpPost]
 		public async Task<IActionResult> CreateNewPhotoPost([FromForm] NewPhotoPostRequest request)
 		{
-			var fileUrls = new List<string>();
+			// 10 MB size limit in bytes
+			const long MaxFileSize = 10 * 1024 * 1024;
+
 			Request.IsHttps = true;
+
+			var fileUrls = new List<string>();
 			foreach (var file in request.Files)
 			{
-				var fileExtention = Path.GetExtension(file.FileName);
-				var fileName = Guid.NewGuid().ToString() + fileExtention;
-				await _fileRepository.SaveFile(file.OpenReadStream(), Path.Combine(_fileUploadOptions.FileUploadPath, fileName));
-				string absoluteUrl = $"{Request.Scheme}://{Request.Host}{Url.Content($"~/Images/{fileName}")}";
+
+				if (file.Length > MaxFileSize)
+				{
+					return BadRequest("File size exceeds 10 MB limit.");
+				}
+
+				using var memoryStream = new MemoryStream();
+				await file.CopyToAsync(memoryStream);
+
+				var newFile = new Core.Models.Entities.File
+				{
+					ContentType = file.ContentType,
+					FileName = Guid.NewGuid().ToString(),
+					FileData = memoryStream.ToArray()
+				};
+				await _fileRepository.SaveFile(newFile);
+				var absoluteUrl = Url.Action("Get", "File", new { fileName = newFile.FileName }, Request.Scheme, Request.Host.Value);
 				fileUrls.Add(absoluteUrl);
 			}
 
