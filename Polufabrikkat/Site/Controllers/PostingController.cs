@@ -11,6 +11,7 @@ using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Models.Posting;
 using Polufabrikkat.Site.Models.User;
 using Polufabrikkat.Site.Options;
+using System.IO;
 
 namespace Polufabrikkat.Site.Controllers
 {
@@ -80,25 +81,31 @@ namespace Polufabrikkat.Site.Controllers
 		[HttpPost]
 		public async Task<IActionResult> CreateNewPhotoPost([FromForm] NewPhotoPostRequest request)
 		{
-			// 10 MB size limit in bytes
-			const long MaxFileSize = 10 * 1024 * 1024;
 			Request.IsHttps = true;
 
 			var fileUrls = new List<string>();
-			if (request.Files.Any(x => x.Length > MaxFileSize))
-			{
-				return BadRequest("File size exceeds 10 MB limit.");
-			}
-			if (request.Files.Any(x => !PhotoHelper.IsMimeTypeAllowed(x.ContentType)))
-			{
-				return BadRequest("Allowed only WebP and JPEG formats.");
-			}
+
 
 			foreach (var file in request.Files)
 			{
+				if (!PhotoHelper.IsValidFileSize(file.Length))
+				{
+					return BadRequest("File size exceeds 10 MB limit.");
+				}
+				if (!PhotoHelper.IsMimeTypeAllowed(file.ContentType))
+				{
+					return BadRequest("Allowed only WebP and JPEG formats.");
+				}
+
+				
+				var fileStream = file.OpenReadStream();
+				if (!PhotoHelper.IsValidPictureSize(fileStream))
+				{
+					return BadRequest("Allows only 1080p picture size.");
+				}
+
 				using var memoryStream = new MemoryStream();
 				await file.CopyToAsync(memoryStream);
-
 				var newFile = new Core.Models.Entities.File
 				{
 					Added = DateTime.UtcNow,
