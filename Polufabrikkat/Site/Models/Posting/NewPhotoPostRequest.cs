@@ -8,6 +8,7 @@
 		public bool DisableComment { get; set; }
 		public bool AutoAddMusic { get; set; }
 		public int PhotoCoverIndex { get; set; }
+		public string TikTokUserUnionId { get; set; }
 
 		public List<IFormFile> Files { get; set; }
 	}

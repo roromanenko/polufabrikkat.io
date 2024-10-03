@@ -19,9 +19,21 @@
 			</ul>
 		</div>
 	</div>
+	<div>
+		<button @@click="getAllFilesFromDb()">Get uploaded files (from DB)</button>
+		<div>
+			<ul v-if="fileUrlsFromDb.length">
+				<li v-for="(url, index) in fileUrlsFromDb" :key="index">
+					<a :href="url" target="_blank" rel="noopener noreferrer">{{ url }}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
 </div>
 
 <script>
 	var getAllFilesUrl = '@Url.Action("GetAllFiles", "Admin")';
 	var uploadFileUrl = '@Url.Action("UploadFile", "Admin")';
+	var getAllFilesFromDbUrl = '@Url.Action("GetAllFilesFromDb", "Admin")';
+	var getFileUrl = '@Url.Action("", "File")';
 </script>

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Polufabrikkat.Core.Constants;
 using Polufabrikkat.Core.Interfaces;
-using Polufabrikkat.Core.Repositories;
 using Polufabrikkat.Site.Options;
 
 namespace Polufabrikkat.Site.Controllers
@@ -31,6 +30,12 @@ namespace Polufabrikkat.Site.Controllers
 			return Json(files);
 		}
 
+		public async Task<IActionResult> GetAllFilesFromDb()
+		{
+			var files = await _fileRepository.GetAllFileNames();
+			return Json(files);
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> UploadFile(IFormFile file)
 		{
@@ -51,14 +56,14 @@ namespace Polufabrikkat.Site.Controllers
 			using var memoryStream = new MemoryStream();
 			await file.CopyToAsync(memoryStream);
 
-			var newFileId = await _fileRepository.SaveFile(new Core.Models.Entities.File
+			var newFile = await _fileRepository.SaveFile(new Core.Models.Entities.File
 			{
 				ContentType = file.ContentType,
 				FileName = file.FileName,
 				FileData = memoryStream.ToArray()
 			});
 
-			return Ok(new { fileName = file.FileName, newFileId });
+			return Ok(new { fileName = file.FileName, newFile });
 		}
 	}
 }

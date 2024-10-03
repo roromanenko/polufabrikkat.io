@@ -2,9 +2,12 @@
 	data() {
 		return {
 			getAllFilesUrl: getAllFilesUrl,
+			getAllFilesFromDbUrl: getAllFilesFromDbUrl,
 			uploadFileUrl: uploadFileUrl,
+			getFileUrl: getFileUrl,
 
 			fileNames: [],
+			fileUrlsFromDb: [],
 			selectedUploadFile: null
 		};
 	},
@@ -16,6 +19,22 @@
 				});
 				if (response.ok) {
 					this.fileNames = await response.json();
+				} else {
+					console.error("error");
+				}
+			} catch (error) {
+				console.error("Error during API call:", error);
+			} finally {
+			}
+		},
+		async getAllFilesFromDb() {
+			try {
+				const response = await fetch(this.getAllFilesFromDbUrl, {
+					method: 'GET'
+				});
+				if (response.ok) {
+					var fileNamesFromDb = await response.json();
+					this.fileUrlsFromDb = fileNamesFromDb.map(x => `${getFileUrl}/${x}`)
 				} else {
 					console.error("error");
 				}

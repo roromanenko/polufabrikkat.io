@@ -32,10 +32,18 @@ namespace Polufabrikkat.Core.Repositories
 			return await _filesCollection.Find(f => f.FileName == fileName).FirstOrDefaultAsync();
 		}
 
-		public async Task<string> SaveFile(Models.Entities.File file)
+		public async Task<Models.Entities.File> SaveFile(Models.Entities.File file)
 		{
 			await _filesCollection.InsertOneAsync(file);
-			return file.Id.ToString();
+			return file;
+		}
+
+		public async Task<List<string>> GetAllFileNames()
+		{
+			return await _filesCollection
+				.Find(FilterDefinition<Models.Entities.File>.Empty)
+				.Project(file => file.FileName)
+				.ToListAsync();
 		}
 	}
 }

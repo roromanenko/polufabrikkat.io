@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Polufabrikkat.Core.ApiClients;
 using Polufabrikkat.Core.Interfaces;
+using Polufabrikkat.Core.Models.Entities;
 using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Core.Options;
 using Polufabrikkat.Site.Interfaces;
@@ -81,18 +82,16 @@ namespace Polufabrikkat.Site.Controllers
 		{
 			// 10 MB size limit in bytes
 			const long MaxFileSize = 10 * 1024 * 1024;
-
 			Request.IsHttps = true;
 
 			var fileUrls = new List<string>();
+			if(request.Files.Any(x => x.Length > MaxFileSize))
+			{
+				return BadRequest("File size exceeds 10 MB limit.");
+			}
+
 			foreach (var file in request.Files)
 			{
-
-				if (file.Length > MaxFileSize)
-				{
-					return BadRequest("File size exceeds 10 MB limit.");
-				}
-
 				using var memoryStream = new MemoryStream();
 				await file.CopyToAsync(memoryStream);
 
@@ -110,7 +109,7 @@ namespace Polufabrikkat.Site.Controllers
 			var apiRequest = new PostPhotoRequest
 			{
 				MediaType = "PHOTO",
-				PostMode = "DIRECT POST",
+				PostMode = "DIRECT_POST",
 				PostInfo = new PostInfo
 				{
 					Title = request.Title,
@@ -127,7 +126,11 @@ namespace Polufabrikkat.Site.Controllers
 				}
 			};
 
-			return Ok(apiRequest);
+			var user = await _userService.GetUserByTikTokId(request.TikTokUserUnionId);
+			var tiktokUser = user.TikTokUsers.First(x => x.UserInfo.UnionId == request.TikTokUserUnionId);
+			var res = await _tikTokApiClient.PostPhoto(tiktokUser.AuthTokenData, apiRequest);
+
+			return Ok(res);
 		}
 	}
 }

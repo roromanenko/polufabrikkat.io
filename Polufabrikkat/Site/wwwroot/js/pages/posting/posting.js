@@ -58,6 +58,7 @@
 			formData.append('disableComment', this.disableComment);
 			formData.append('autoAddMusic', this.autoAddMusic);
 			formData.append('photoCoverIndex', this.photoCoverIndex);
+			formData.append('tikTokUserUnionId', this.selectedTikTokUser.unionId);
 
 			try {
 				// Replace `YOUR_API_ENDPOINT` with your .NET endpoint

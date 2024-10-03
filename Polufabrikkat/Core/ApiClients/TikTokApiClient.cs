@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.TikTok;
 using System.Net;
@@ -13,11 +14,13 @@ namespace Polufabrikkat.Core.ApiClients
 {
 	public class TikTokApiClient : ITikTokApiClient
 	{
+		private readonly ILogger<TikTokApiClient> _logger;
 		private readonly HttpClient _httpClient;
 		private readonly IMemoryCache _memoryCache;
 
-		public TikTokApiClient(HttpClient httpClient, IMemoryCache memoryCache)
+		public TikTokApiClient(ILogger<TikTokApiClient> logger, HttpClient httpClient, IMemoryCache memoryCache)
 		{
+			_logger = logger;
 			_httpClient = httpClient;
 			_memoryCache = memoryCache;
 		}
@@ -131,7 +134,10 @@ namespace Polufabrikkat.Core.ApiClients
 			});
 			using var res = await _httpClient.SendAsync(request);
 
-			return await res.Content.ReadAsStringAsync();
+			var response = await res.Content.ReadAsStringAsync();
+			_logger.LogInformation($"Post Photo Response: {response}");
+
+			return response;
 		}
 
 		public async Task<AuthTokenData> RefreshTokenData(AuthTokenData authTokenData)
