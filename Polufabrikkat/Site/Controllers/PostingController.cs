@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Polufabrikkat.Core.ApiClients;
 using Polufabrikkat.Core.Interfaces;
-using Polufabrikkat.Core.Models.Entities;
 using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Core.Options;
+using Polufabrikkat.Site.Helpers;
 using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Models.Posting;
 using Polufabrikkat.Site.Models.User;
@@ -85,9 +85,13 @@ namespace Polufabrikkat.Site.Controllers
 			Request.IsHttps = true;
 
 			var fileUrls = new List<string>();
-			if(request.Files.Any(x => x.Length > MaxFileSize))
+			if (request.Files.Any(x => x.Length > MaxFileSize))
 			{
 				return BadRequest("File size exceeds 10 MB limit.");
+			}
+			if (request.Files.Any(x => !PhotoHelper.IsMimeTypeAllowed(x.ContentType)))
+			{
+				return BadRequest("Allowed only WebP and JPEG formats.");
 			}
 
 			foreach (var file in request.Files)
@@ -97,8 +101,9 @@ namespace Polufabrikkat.Site.Controllers
 
 				var newFile = new Core.Models.Entities.File
 				{
+					Added = DateTime.UtcNow,
 					ContentType = file.ContentType,
-					FileName = Guid.NewGuid().ToString(),
+					FileName = Guid.NewGuid().ToString() + PhotoHelper.GetExtensionFromMimeType(file.ContentType),
 					FileData = memoryStream.ToArray()
 				};
 				await _fileRepository.SaveFile(newFile);

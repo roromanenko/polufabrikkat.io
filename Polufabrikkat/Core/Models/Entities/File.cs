@@ -1,5 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Polufabrikkat.Core.Models.Entities
@@ -11,6 +11,7 @@ namespace Polufabrikkat.Core.Models.Entities
 		public ObjectId Id { get; set; }
 		public string FileName { get; set; }
 		public string ContentType { get; set; }
+		public DateTime Added { get; set; }
 		public byte[] FileData { get; set; }
 	}
 }
