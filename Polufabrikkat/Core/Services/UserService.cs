@@ -76,5 +76,10 @@ namespace Polufabrikkat.Core.Services
 		{
 			return _userRepository.AddTikTokUser(userId, tikTokUser);
 		}
+
+		public Task<TikTokUser> GetTikTokUserByUnionId(string unionId)
+		{
+			return _userRepository.GetTikTokUserByUnionId(unionId);
+		}
 	}
 }

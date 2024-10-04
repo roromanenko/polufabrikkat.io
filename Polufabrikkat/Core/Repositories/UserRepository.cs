@@ -84,11 +84,39 @@ namespace Polufabrikkat.Core.Repositories
 		public Task UpdateAuthData(AuthTokenData authData)
 		{
 			var filter = Builders<User>.Filter.ElemMatch(u => u.TikTokUsers, tu => tu.AuthTokenData.OpenId == authData.OpenId);
-			// Update the first tiktok user mathed to filter
 			var update = Builders<User>.Update.Set("TikTokUsers.$.AuthTokenData", authData);
 
 			return _userCollection.UpdateOneAsync(filter, update);
+		}
 
+		public Task<TikTokUser> GetTikTokUserByUnionId(string unionId)
+		{
+			var filter = Builders<User>.Filter.ElemMatch(u => u.TikTokUsers, t => t.UserInfo.UnionId == unionId);
+			var projection = Builders<User>.Projection.Expression(u => u.TikTokUsers.FirstOrDefault(t => t.UserInfo.UnionId == unionId));
+
+			return _userCollection
+				.Find(filter)
+				.Project(projection)
+				.FirstOrDefaultAsync();
+		}
+
+		public Task<QueryCreatorInfo> GetQueryCreatorInfoByOpenId(string openId)
+		{
+			var filter = Builders<User>.Filter.ElemMatch(u => u.TikTokUsers, t => t.UserInfo.OpenId == openId);
+			var projection = Builders<User>.Projection.Expression(u => u.TikTokUsers.First(t => t.UserInfo.OpenId == openId).QueryCreatorInfo);
+
+			return _userCollection
+				.Find(filter)
+				.Project(projection)
+				.FirstOrDefaultAsync();
+		}
+
+		public Task UpdateQueryCreatorInfo(string openId, QueryCreatorInfo queryCreatorInfo)
+		{
+			var filter = Builders<User>.Filter.ElemMatch(u => u.TikTokUsers, tu => tu.AuthTokenData.OpenId == openId);
+			var update = Builders<User>.Update.Set("TikTokUsers.$.QueryCreatorInfo", queryCreatorInfo);
+
+			return _userCollection.UpdateOneAsync(filter, update);
 		}
 	}
 }

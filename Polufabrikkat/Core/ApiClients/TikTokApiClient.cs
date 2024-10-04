@@ -118,6 +118,7 @@ namespace Polufabrikkat.Core.ApiClients
 			{
 				throw TikTokApiExceptions.ThrowExceptionFromCode(content.Error.Code);
 			}
+			content.Data.RefreshedDateTime = DateTime.UtcNow;
 
 			return content.Data;
 		}

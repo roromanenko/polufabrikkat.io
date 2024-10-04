@@ -20,17 +20,15 @@ namespace Polufabrikkat.Site.Controllers
 		private readonly ITikTokService _tikTokService;
 		private readonly IMapper _mapper;
 		private readonly IFileRepository _fileRepository;
-		private readonly TikTokOptions _tikTokOptions;
 
 		public PostingController(IOptions<FileUploadOptions> fileUploadOptions, IUserService userService,
-			ITikTokService tikTokService, IMapper mapper, IOptions<TikTokOptions> tikTokOptions, IFileRepository fileRepository)
+			ITikTokService tikTokService, IMapper mapper, IFileRepository fileRepository)
 		{
 			_fileUploadOptions = fileUploadOptions.Value;
 			_userService = userService;
 			_tikTokService = tikTokService;
 			_mapper = mapper;
 			_fileRepository = fileRepository;
-			_tikTokOptions = tikTokOptions.Value;
 		}
 
 		public async Task<IActionResult> Index(PostingViewModel model)
@@ -43,26 +41,15 @@ namespace Polufabrikkat.Site.Controllers
 		[HttpGet]
 		public async Task<IActionResult> SelectTikTokUser(string unionId)
 		{
-			var user = await _userService.GetUserByTikTokId(unionId);
-			if (user == null)
+			var tiktokUser = await _userService.GetTikTokUserByUnionId(unionId);
+			if (tiktokUser == null)
 			{
 				return BadRequest(new { error = "TikTok user not found" });
 			}
 
-			var tiktokUser = user.TikTokUsers.First(x => x.UserInfo.UnionId == unionId);
-			if (tiktokUser.QueryCreatorInfo != null
-				&& ((DateTime.UtcNow - tiktokUser.QueryCreatorInfo.RefreshedDateTime) < _tikTokOptions.RefreshQueryCreatorInfoInterval))
-			{
-				return Json(_mapper.Map<QueryCreatorInfoModel>(tiktokUser.QueryCreatorInfo));
-			}
-
 			var queryCreatorInfo = await _tikTokService.WithAuthData(tiktokUser.AuthTokenData).GetQueryCreatorInfo();
 
-			queryCreatorInfo.RefreshedDateTime = DateTime.UtcNow;
-			tiktokUser.QueryCreatorInfo = queryCreatorInfo;
-			await _userService.UpdateUser(user);
-
-			return Json(_mapper.Map<QueryCreatorInfoModel>(tiktokUser.QueryCreatorInfo));
+			return Json(_mapper.Map<QueryCreatorInfoModel>(queryCreatorInfo));
 		}
 
 		[HttpPost]

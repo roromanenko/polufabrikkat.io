@@ -13,5 +13,8 @@ namespace Polufabrikkat.Core.Interfaces
 		Task RemoveTikTokUser(string userId, string tikTokUserUnionId);
 		Task AddTikTokUser(string userId, TikTokUser tikTokUser);
 		Task UpdateAuthData(AuthTokenData authData);
+		Task<TikTokUser> GetTikTokUserByUnionId(string unionId);
+		Task<QueryCreatorInfo> GetQueryCreatorInfoByOpenId(string openId);
+		Task UpdateQueryCreatorInfo(string openId, QueryCreatorInfo queryCreatorInfo);
 	}
 }
