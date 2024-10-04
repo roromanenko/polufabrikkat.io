@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Polufabrikkat.Site.Interfaces;
+using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Site.Models.User;
 
 namespace Polufabrikkat.Site.Controllers

@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
-using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Options;
-using Polufabrikkat.Site.Services;
 
 namespace Polufabrikkat.Site
 {
@@ -39,8 +37,6 @@ namespace Polufabrikkat.Site
 					options.LogoutPath = "/Home/Logout";
 				});
 
-			services.AddScoped<IUserService, UserService>();
-
 			return services;
 		}
 
@@ -70,6 +66,7 @@ namespace Polufabrikkat.Site
 
 			app.UseRouting();
 			app.UseCors(SpecificOrigins);
+			app.UseHttpsRedirection();
 
 			app.UseAuthentication();
 			app.UseAuthorization();

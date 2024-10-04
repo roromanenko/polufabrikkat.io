@@ -9,73 +9,86 @@ using Polufabrikkat.Core.Options;
 
 namespace Polufabrikkat.Core.Repositories
 {
-    public class UserRepository : IUserRepository
+	public class UserRepository : IUserRepository
 	{
 		private readonly MongoClient _mongoClient;
 		private readonly MongoDbOptions _mongoDbOptions;
 		private readonly IMongoDatabase _database;
+		private readonly IMongoCollection<User> _userCollection;
 
 		public UserRepository(MongoClient mongoClient, IOptions<MongoDbOptions> mongoDbOptions)
 		{
 			_mongoClient = mongoClient;
 			_mongoDbOptions = mongoDbOptions.Value;
 			_database = _mongoClient.GetDatabase(_mongoDbOptions.DatabaseName);
+			_userCollection = _database.GetCollection<User>();
 		}
 
 		public async Task<User> CreateUser(User newUser)
 		{
-			var userCollection = _database.GetCollection<User>();
-			await userCollection.InsertOneAsync(newUser);
+			await _userCollection.InsertOneAsync(newUser);
 			return newUser;
 		}
 
 		public Task<User> GetUserByTikTokId(string unionId)
 		{
 			var filter = Builders<User>.Filter.ElemMatch(u => u.TikTokUsers, t => t.UserInfo.UnionId == unionId);
-			var userCollection = _database.GetCollection<User>();
-			var user = userCollection.Find(filter).FirstOrDefaultAsync();
+			var user = _userCollection.Find(filter).FirstOrDefaultAsync();
 			return user;
 		}
 
 		public Task<User> GetUserByUsername(string username)
 		{
 			var filter = Builders<User>.Filter.Eq(u => u.Username, username);
-			var userCollection = _database.GetCollection<User>();
-			var user = userCollection.Find(filter).FirstOrDefaultAsync();
+			var user = _userCollection.Find(filter).FirstOrDefaultAsync();
 			return user;
 		}
 
 		public Task<User> GetUserById(string userId)
 		{
 			var filter = Builders<User>.Filter.Eq(u => u.Id, ObjectId.Parse(userId));
-			var userCollection = _database.GetCollection<User>();
-			var user = userCollection.Find(filter).FirstOrDefaultAsync();
+			var user = _userCollection.Find(filter).FirstOrDefaultAsync();
 			return user;
 		}
 
 		public Task UpdateUser(User user)
 		{
 			var filter = Builders<User>.Filter.Eq(u => u.Id, user.Id);
-			var userCollection = _database.GetCollection<User>();
 
-			return userCollection.ReplaceOneAsync(filter, user);
+			return _userCollection.ReplaceOneAsync(filter, user);
 		}
 
 		public Task RemoveTikTokUser(string userId, string tikTokUserUnionId)
 		{
-			var userCollection = _database.GetCollection<User>();
 			var filter = Builders<User>.Filter.Eq(u => u.Id, ObjectId.Parse(userId));
 			var update = Builders<User>.Update.PullFilter(u => u.TikTokUsers, t => t.UserInfo.UnionId == tikTokUserUnionId);
-			return userCollection.UpdateOneAsync(filter, update);
+			return _userCollection.UpdateOneAsync(filter, update);
 
 		}
 
-		public Task AddTikTokUser(string userId, TikTokUser tikTokUser)
+		public async Task AddTikTokUser(string userId, TikTokUser tikTokUser)
 		{
 			var userCollection = _database.GetCollection<User>();
+			var filterTikTokUser = Builders<User>.Filter.ElemMatch(u => u.TikTokUsers, t => t.UserInfo.UnionId == tikTokUser.UserInfo.UnionId);
+			var userWithExistingTikTokAccount = await _userCollection.Find(filterTikTokUser).FirstOrDefaultAsync();
+			if (userWithExistingTikTokAccount != null)
+			{
+				throw new ArgumentException("This tiktok user is already added to another account");
+			}
+
 			var filter = Builders<User>.Filter.Eq(u => u.Id, ObjectId.Parse(userId));
 			var update = Builders<User>.Update.Push(u => u.TikTokUsers, tikTokUser);
-			return userCollection.UpdateOneAsync(filter, update);
+			await userCollection.UpdateOneAsync(filter, update);
+		}
+
+		public Task UpdateAuthData(AuthTokenData authData)
+		{
+			var filter = Builders<User>.Filter.ElemMatch(u => u.TikTokUsers, tu => tu.AuthTokenData.OpenId == authData.OpenId);
+			// Update the first tiktok user mathed to filter
+			var update = Builders<User>.Update.Set("TikTokUsers.$.AuthTokenData", authData);
+
+			return _userCollection.UpdateOneAsync(filter, update);
+
 		}
 	}
 }

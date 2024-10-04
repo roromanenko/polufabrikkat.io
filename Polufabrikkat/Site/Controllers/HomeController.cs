@@ -4,28 +4,27 @@ using Microsoft.Extensions.Caching.Memory;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.Entities;
 using Polufabrikkat.Core.Models.TikTok;
-using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Models;
 using System.Diagnostics;
 using System.Web;
 
 namespace Polufabrikkat.Site.Controllers
 {
-    [AllowAnonymous]
+	[AllowAnonymous]
 	public class HomeController : BaseController
 	{
 		private readonly ILogger<HomeController> _logger;
-		private readonly ITikTokApiClient _tikTokApiClient;
-		private readonly IMemoryCache _memoryCache;
+		private readonly ITikTokService _tikTokService;
 		private readonly IUserService _userService;
 
-		public HomeController(ILogger<HomeController> logger, ITikTokApiClient tikTokApiClient, IMemoryCache memoryCache, IUserService userService)
+		public HomeController(ILogger<HomeController> logger, ITikTokService tikTokService, IMemoryCache memoryCache, IUserService userService)
 		{
 			_logger = logger;
-			_tikTokApiClient = tikTokApiClient;
-			_memoryCache = memoryCache;
+			_tikTokService = tikTokService;
 			_userService = userService;
 		}
+
+		public string ProcessTikTokCallbackUrl => Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
 
 		public IActionResult Index()
 		{
@@ -60,7 +59,7 @@ namespace Polufabrikkat.Site.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginModel model)
 		{
-			var user = await _userService.VerifyUserLogin(model);
+			var user = await _userService.VerifyUserLogin(model.Username, model.Password);
 			if (user != null)
 			{
 				await LoginUser(user);
@@ -80,7 +79,7 @@ namespace Polufabrikkat.Site.Controllers
 		{
 			try
 			{
-				User user = await _userService.RegisterUser(model);
+				User user = await _userService.RegisterUser(model.Username, model.Password);
 				await LoginUser(user);
 				if (!string.IsNullOrEmpty(model.ReturnUrl))
 				{
@@ -103,29 +102,18 @@ namespace Polufabrikkat.Site.Controllers
 
 		public IActionResult RedirectToTikTokLogin([FromQuery] string returnUrl, [FromQuery] CallbackStrategy? callbackStrategy)
 		{
-			Request.IsHttps = true;
-			var redirectUrl = Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
-			var loginUrl = _tikTokApiClient.GetLoginUrl(redirectUrl, returnUrl, callbackStrategy ?? CallbackStrategy.Login);
+			var loginUrl = _tikTokService.GetLoginUrl(ProcessTikTokCallbackUrl, returnUrl, callbackStrategy ?? CallbackStrategy.Login);
 			return Redirect(loginUrl);
 		}
 
 		public async Task<IActionResult> ProcessTikTokLoginResponse()
 		{
-			Request.IsHttps = true;
 			var response = new TikTokCallbackResponse(Request.Query);
 
-			var redirectUrl = Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
-			var tokenData = await _tikTokApiClient.GetAuthToken(HttpUtility.UrlDecode(response.Code), redirectUrl);
-			var userInfo = await _tikTokApiClient.GetUserInfo(tokenData);
+			var tokenData = await _tikTokService.GetAuthToken(HttpUtility.UrlDecode(response.Code), ProcessTikTokCallbackUrl);
+			var userInfo = await _tikTokService.WithAuthData(tokenData).GetUserInfo();
 
-			TikTokHandleCallback tikTokHandleCallback = null;
-			if (!string.IsNullOrEmpty(response.State))
-			{
-				if (_memoryCache.TryGetValue(response.State.ToString(), out tikTokHandleCallback))
-				{
-					_memoryCache.Remove(response.State.ToString());
-				}
-			}
+			TikTokHandleCallback tikTokHandleCallback = _tikTokService.GetTikTokHandleCallback(response.State);
 
 			if (tikTokHandleCallback == null)
 			{
@@ -146,15 +134,16 @@ namespace Polufabrikkat.Site.Controllers
 			if (user != null)
 			{
 				var tiktokUser = user.TikTokUsers.First(x => x.UserInfo.UnionId == userInfo.UnionId);
+				// TODO seprate method for update authdata for tiktokuser
 				tiktokUser.AuthTokenData = tokenData;
 				await _userService.UpdateUser(user);
 
 				await LoginUser(user);
+
 				if (!string.IsNullOrEmpty(returnUrl))
 				{
 					return Redirect(returnUrl);
 				}
-
 				return RedirectToAction("Index", "Posting");
 			}
 
@@ -187,7 +176,7 @@ namespace Polufabrikkat.Site.Controllers
 
 				return RedirectToAction("Index", "User");
 			}
-			catch(ArgumentException ex)
+			catch (ArgumentException ex)
 			{
 				return RedirectToAction("Index", "User", new { Error = ex.Message });
 			}

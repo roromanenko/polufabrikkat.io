@@ -1,13 +1,12 @@
 ﻿using Polufabrikkat.Core.Models.Entities;
 using Polufabrikkat.Core.Models.TikTok;
-using Polufabrikkat.Site.Models;
 
-namespace Polufabrikkat.Site.Interfaces
+namespace Polufabrikkat.Core.Interfaces
 {
-    public interface IUserService
+	public interface IUserService
 	{
-		Task<User> VerifyUserLogin(LoginModel request);
-		Task<User> RegisterUser(LoginModel model);
+		Task<User> VerifyUserLogin(string username, string password);
+		Task<User> RegisterUser(string username, string password);
 		Task<User> GetUserByTikTokId(string unionId);
 		Task<User> GetUserById(string userId);
 		Task UpdateUser(User user);

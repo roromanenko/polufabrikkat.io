@@ -1,15 +1,12 @@
-﻿using Amazon.Runtime.Internal;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Polufabrikkat.Core.Constants;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.Entities;
 using Polufabrikkat.Core.Models.TikTok;
-using Polufabrikkat.Site.Interfaces;
-using Polufabrikkat.Site.Models;
 
-namespace Polufabrikkat.Site.Services
+namespace Polufabrikkat.Core.Services
 {
-    public class UserService : IUserService
+	public class UserService : IUserService
 	{
 		private readonly IUserRepository _userRepository;
 		private readonly PasswordHasher<User> _passwordHasher;
@@ -20,15 +17,15 @@ namespace Polufabrikkat.Site.Services
 			_passwordHasher = new PasswordHasher<User>();
 		}
 
-		public async Task<User> VerifyUserLogin(LoginModel request)
+		public async Task<User> VerifyUserLogin(string username, string password)
 		{
-			var user = await _userRepository.GetUserByUsername(request.Username);
+			var user = await _userRepository.GetUserByUsername(username);
 			if (user == null)
 			{
 				return user;
 			}
 
-			var result = _passwordHasher.VerifyHashedPassword(null, user.PasswordHash, request.Password);
+			var result = _passwordHasher.VerifyHashedPassword(null, user.PasswordHash, password);
 
 			if (result == PasswordVerificationResult.Success)
 			{
@@ -38,9 +35,9 @@ namespace Polufabrikkat.Site.Services
 			return null;
 		}
 
-		public async Task<User> RegisterUser(LoginModel model)
+		public async Task<User> RegisterUser(string username, string password)
 		{
-			var existingUser = await _userRepository.GetUserByUsername(model.Username);
+			var existingUser = await _userRepository.GetUserByUsername(username);
 			if (existingUser != null)
 			{
 				throw new ArgumentException("User with this username is already exists");
@@ -48,8 +45,8 @@ namespace Polufabrikkat.Site.Services
 
 			var newUser = new User
 			{
-				Username = model.Username,
-				PasswordHash = _passwordHasher.HashPassword(null, model.Password),
+				Username = username,
+				PasswordHash = _passwordHasher.HashPassword(null, password),
 				Roles = new List<string> { AppRoles.User }
 			};
 			return await _userRepository.CreateUser(newUser);
@@ -74,6 +71,7 @@ namespace Polufabrikkat.Site.Services
 		{
 			return _userRepository.RemoveTikTokUser(userId, tikTokUserUnionId);
 		}
+
 		public Task AddTikTokUser(string userId, TikTokUser tikTokUser)
 		{
 			return _userRepository.AddTikTokUser(userId, tikTokUser);

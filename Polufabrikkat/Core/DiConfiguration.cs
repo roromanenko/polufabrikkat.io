@@ -5,6 +5,7 @@ using Polufabrikkat.Core.ApiClients;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Options;
 using Polufabrikkat.Core.Repositories;
+using Polufabrikkat.Core.Services;
 
 namespace Polufabrikkat.Core
 {
@@ -24,8 +25,10 @@ namespace Polufabrikkat.Core
 			services.Configure<MongoDbOptions>(configuration.GetSection(nameof(MongoDbOptions)));
 			services.Configure<TikTokOptions>(configuration.GetSection(nameof(TikTokOptions)));
 			services.AddScoped<ITikTokApiClient, TikTokApiClient>();
+			services.AddScoped<ITikTokService, TikTokService>();
 			services.AddScoped<IUserRepository, UserRepository>();
 			services.AddScoped<IFileRepository, FileRepository>();
+			services.AddScoped<IUserService, UserService>();
 
 			return services;
 		}

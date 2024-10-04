@@ -12,5 +12,6 @@ namespace Polufabrikkat.Core.Interfaces
 		Task UpdateUser(User user);
 		Task RemoveTikTokUser(string userId, string tikTokUserUnionId);
 		Task AddTikTokUser(string userId, TikTokUser tikTokUser);
+		Task UpdateAuthData(AuthTokenData authData);
 	}
 }

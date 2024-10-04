@@ -2,16 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Polufabrikkat.Core.ApiClients;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Core.Options;
 using Polufabrikkat.Site.Helpers;
-using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Models.Posting;
 using Polufabrikkat.Site.Models.User;
 using Polufabrikkat.Site.Options;
-using System.IO;
 
 namespace Polufabrikkat.Site.Controllers
 {
@@ -20,17 +17,17 @@ namespace Polufabrikkat.Site.Controllers
 	{
 		private readonly FileUploadOptions _fileUploadOptions;
 		private readonly IUserService _userService;
-		private readonly ITikTokApiClient _tikTokApiClient;
+		private readonly ITikTokService _tikTokService;
 		private readonly IMapper _mapper;
 		private readonly IFileRepository _fileRepository;
 		private readonly TikTokOptions _tikTokOptions;
 
 		public PostingController(IOptions<FileUploadOptions> fileUploadOptions, IUserService userService,
-			ITikTokApiClient tikTokApiClient, IMapper mapper, IOptions<TikTokOptions> tikTokOptions, IFileRepository fileRepository)
+			ITikTokService tikTokService, IMapper mapper, IOptions<TikTokOptions> tikTokOptions, IFileRepository fileRepository)
 		{
 			_fileUploadOptions = fileUploadOptions.Value;
 			_userService = userService;
-			_tikTokApiClient = tikTokApiClient;
+			_tikTokService = tikTokService;
 			_mapper = mapper;
 			_fileRepository = fileRepository;
 			_tikTokOptions = tikTokOptions.Value;
@@ -59,17 +56,7 @@ namespace Polufabrikkat.Site.Controllers
 				return Json(_mapper.Map<QueryCreatorInfoModel>(tiktokUser.QueryCreatorInfo));
 			}
 
-			QueryCreatorInfo queryCreatorInfo;
-			try
-			{
-				queryCreatorInfo = await _tikTokApiClient.GetQueryCreatorInfo(tiktokUser.AuthTokenData);
-			}
-			catch (TikTokInvalidTokenException)
-			{
-				tiktokUser.AuthTokenData = await _tikTokApiClient.RefreshTokenData(tiktokUser.AuthTokenData);
-				await _userService.UpdateUser(user);
-				queryCreatorInfo = await _tikTokApiClient.GetQueryCreatorInfo(tiktokUser.AuthTokenData);
-			}
+			var queryCreatorInfo = await _tikTokService.WithAuthData(tiktokUser.AuthTokenData).GetQueryCreatorInfo();
 
 			queryCreatorInfo.RefreshedDateTime = DateTime.UtcNow;
 			tiktokUser.QueryCreatorInfo = queryCreatorInfo;
@@ -97,7 +84,7 @@ namespace Polufabrikkat.Site.Controllers
 					return BadRequest("Allowed only WebP and JPEG formats.");
 				}
 
-				
+
 				var fileStream = file.OpenReadStream();
 				if (!PhotoHelper.IsValidPictureSize(fileStream))
 				{
@@ -137,10 +124,10 @@ namespace Polufabrikkat.Site.Controllers
 					PhotoImages = fileUrls
 				}
 			};
-
+			// TODO get only tiktokUser
 			var user = await _userService.GetUserByTikTokId(request.TikTokUserUnionId);
 			var tiktokUser = user.TikTokUsers.First(x => x.UserInfo.UnionId == request.TikTokUserUnionId);
-			var res = await _tikTokApiClient.PostPhoto(tiktokUser.AuthTokenData, apiRequest);
+			var res = await _tikTokService.WithAuthData(tiktokUser.AuthTokenData).PostPhoto(apiRequest);
 
 			return Ok(res);
 		}
