@@ -28,6 +28,7 @@ namespace Polufabrikkat.Core
 			services.AddScoped<ITikTokService, TikTokService>();
 			services.AddScoped<IUserRepository, UserRepository>();
 			services.AddScoped<IFileRepository, FileRepository>();
+			services.AddScoped<IPostRepository, PostRepository>();
 			services.AddScoped<IUserService, UserService>();
 
 			return services;

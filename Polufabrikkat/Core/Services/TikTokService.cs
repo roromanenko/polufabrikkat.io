@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Amazon.Runtime.Internal;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using Polufabrikkat.Core.Interfaces;
+using Polufabrikkat.Core.Models.Entities;
 using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Core.Options;
 
@@ -11,13 +14,19 @@ namespace Polufabrikkat.Core.Services
 		private readonly ITikTokApiClient _tikTokApiClient;
 		private readonly IMemoryCache _memoryCache;
 		private readonly IUserRepository _userRepository;
+		private readonly IFileRepository _fileRepository;
+		private readonly IPostRepository _postRepository;
 		private readonly TikTokOptions _tikTokOptions;
 
-		public TikTokService(ITikTokApiClient tikTokApiClient, IMemoryCache memoryCache, IUserRepository userRepository, IOptions<TikTokOptions> tikTokOptions)
+		public TikTokService(ITikTokApiClient tikTokApiClient, IMemoryCache memoryCache,
+			IUserRepository userRepository, IFileRepository fileRepository, IPostRepository postRepository,
+			IOptions<TikTokOptions> tikTokOptions)
 		{
 			_tikTokApiClient = tikTokApiClient;
 			_memoryCache = memoryCache;
 			_userRepository = userRepository;
+			_fileRepository = fileRepository;
+			_postRepository = postRepository;
 			_tikTokOptions = tikTokOptions.Value;
 		}
 		public Task<AuthTokenData> GetAuthToken(string code, string processTikTokCallbackUrl)
@@ -44,9 +53,24 @@ namespace Polufabrikkat.Core.Services
 			return tikTokHandleCallback;
 		}
 
+		public async Task<Post> AddNewPost(Post post, List<Models.Entities.File> files)
+		{
+			var fileIds = new List<ObjectId>();
+			foreach (var file in files)
+			{
+				var addedFile = await _fileRepository.SaveFile(file);
+				fileIds.Add(addedFile.Id);
+			}
+			post.FileIds = fileIds;
+			post = await _postRepository.AddPost(post);
+
+			return post;
+		}
+
 		public ITikTokAuthenticatedService WithAuthData(AuthTokenData authTokenData)
 		{
-			return new TikTokAuthenticatedService(_tikTokApiClient, _userRepository, _tikTokOptions, authTokenData);
+			return new TikTokAuthenticatedService(_tikTokApiClient, _userRepository,
+				_postRepository, _tikTokOptions, authTokenData);
 		}
 	}
 
@@ -55,14 +79,17 @@ namespace Polufabrikkat.Core.Services
 		private readonly ITikTokApiClient _tikTokApiClient;
 		private AuthTokenData _authTokenData;
 		private readonly IUserRepository _userRepository;
+		private readonly IPostRepository _postRepository;
 		private readonly TikTokOptions _tikTokOptions;
 
 		public TikTokAuthenticatedService(ITikTokApiClient tikTokApiClient, IUserRepository userRepository,
+			IPostRepository postRepository,
 			TikTokOptions tikTokOptions, AuthTokenData authTokenData)
 		{
 			_tikTokApiClient = tikTokApiClient;
 			_authTokenData = authTokenData;
 			_userRepository = userRepository;
+			_postRepository = postRepository;
 			_tikTokOptions = tikTokOptions;
 		}
 
@@ -70,12 +97,6 @@ namespace Polufabrikkat.Core.Services
 		{
 			await VerifyTokenDataAndRefreshIfNeeded();
 			return await _tikTokApiClient.GetUserInfo(_authTokenData);
-		}
-
-		public async Task<string> PostPhoto(PostPhotoRequest apiRequest)
-		{
-			await VerifyTokenDataAndRefreshIfNeeded();
-			return await _tikTokApiClient.PostPhoto(_authTokenData, apiRequest);
 		}
 
 		public async Task<QueryCreatorInfo> GetQueryCreatorInfo()
@@ -92,6 +113,29 @@ namespace Polufabrikkat.Core.Services
 			await _userRepository.UpdateQueryCreatorInfo(_authTokenData.OpenId, queryCreatorInfo);
 
 			return queryCreatorInfo;
+		}
+
+		public async Task PublishPhotoPost(Post post)
+		{
+			await VerifyTokenDataAndRefreshIfNeeded();
+			var apiRequest = new PostPhotoRequest
+			{
+				PostInfo = new PostInfo
+				{
+					Title = post.TikTokPostInfo.Title,
+					Description = post.TikTokPostInfo.Description,
+					PrivacyLevel = post.TikTokPostInfo.PrivacyLevel,
+					DisableComment = post.TikTokPostInfo.DisableComment,
+					AutoAddMusic = post.TikTokPostInfo.AutoAddMusic,
+				},
+				SourceInfo = new SourceInfo
+				{
+					PhotoCoverIndex = post.TikTokPostInfo.PhotoCoverIndex,
+					PhotoImages = post.FileUrls
+				}
+			};
+			var publishId = await _tikTokApiClient.PublishPhotoPost(_authTokenData, apiRequest);
+			await _postRepository.MarkAsSentToTikTok(post.Id, publishId);
 		}
 
 		private async Task VerifyTokenDataAndRefreshIfNeeded()

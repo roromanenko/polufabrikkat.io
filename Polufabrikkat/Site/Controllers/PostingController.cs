@@ -2,9 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using Polufabrikkat.Core.Interfaces;
-using Polufabrikkat.Core.Models.TikTok;
-using Polufabrikkat.Core.Options;
 using Polufabrikkat.Site.Helpers;
 using Polufabrikkat.Site.Models.Posting;
 using Polufabrikkat.Site.Models.User;
@@ -55,11 +54,8 @@ namespace Polufabrikkat.Site.Controllers
 		[HttpPost]
 		public async Task<IActionResult> CreateNewPhotoPost([FromForm] NewPhotoPostRequest request)
 		{
-			Request.IsHttps = true;
-
 			var fileUrls = new List<string>();
-
-
+			var filesToUpload = new List<Core.Models.Entities.File>();
 			foreach (var file in request.Files)
 			{
 				if (!PhotoHelper.IsValidFileSize(file.Length))
@@ -70,8 +66,6 @@ namespace Polufabrikkat.Site.Controllers
 				{
 					return BadRequest("Allowed only WebP and JPEG formats.");
 				}
-
-
 				var fileStream = file.OpenReadStream();
 				if (!PhotoHelper.IsValidPictureSize(fileStream))
 				{
@@ -87,36 +81,39 @@ namespace Polufabrikkat.Site.Controllers
 					FileName = Guid.NewGuid().ToString() + PhotoHelper.GetExtensionFromMimeType(file.ContentType),
 					FileData = memoryStream.ToArray()
 				};
-				await _fileRepository.SaveFile(newFile);
+				filesToUpload.Add(newFile);
 				var absoluteUrl = Url.Action("Get", "File", new { fileName = newFile.FileName }, Request.Scheme, Request.Host.Value);
 				fileUrls.Add(absoluteUrl);
 			}
-
-			var apiRequest = new PostPhotoRequest
+			var tiktokUser = await _userService.GetTikTokUserByUnionId(request.TikTokUserUnionId);
+			if (tiktokUser == null)
 			{
-				MediaType = "PHOTO",
-				PostMode = "DIRECT_POST",
-				PostInfo = new PostInfo
-				{
-					Title = request.Title,
-					Description = request.Description,
-					PrivacyLevel = request.PrivacyLevel,
-					DisableComment = request.DisableComment,
-					AutoAddMusic = request.AutoAddMusic,
-				},
-				SourceInfo = new SourceInfo
-				{
-					Source = "PULL_FROM_URL",
-					PhotoCoverIndex = request.PhotoCoverIndex,
-					PhotoImages = fileUrls
-				}
-			};
-			// TODO get only tiktokUser
-			var user = await _userService.GetUserByTikTokId(request.TikTokUserUnionId);
-			var tiktokUser = user.TikTokUsers.First(x => x.UserInfo.UnionId == request.TikTokUserUnionId);
-			var res = await _tikTokService.WithAuthData(tiktokUser.AuthTokenData).PostPhoto(apiRequest);
+				return BadRequest("Incorrect TikTok user id");
+			}
 
-			return Ok(res);
+			var newPost = new Core.Models.Entities.Post
+			{
+				UserId = ObjectId.Parse(UserId),
+				TikTokUserUnionId = request.TikTokUserUnionId,
+				TikTokPostInfo = new Core.Models.Entities.TikTokPostInfo
+				{
+					AutoAddMusic = request.AutoAddMusic,
+					Description = request.Description,
+					DisableComment = request.DisableComment,
+					PhotoCoverIndex = request.PhotoCoverIndex,
+					PrivacyLevel = request.PrivacyLevel,
+					Title = request.Title
+				},
+				Type = Core.Models.Entities.PostType.Photo,
+				Status = Core.Models.Entities.PostStatus.Created,
+				Created = DateTime.UtcNow,
+				ScheduledPublicationTime = null,
+				FileUrls = fileUrls
+			};
+
+			newPost = await _tikTokService.AddNewPost(newPost, filesToUpload);
+			await _tikTokService.WithAuthData(tiktokUser.AuthTokenData).PublishPhotoPost(newPost);
+			return Ok(newPost.Id.ToString());
 		}
 	}
 }

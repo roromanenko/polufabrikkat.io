@@ -123,8 +123,12 @@ namespace Polufabrikkat.Core.ApiClients
 			return content.Data;
 		}
 
-		public async Task<string> PostPhoto(AuthTokenData authData, PostPhotoRequest postRequest)
+		public async Task<string> PublishPhotoPost(AuthTokenData authData, PostPhotoRequest postRequest)
 		{
+			postRequest.MediaType = "PHOTO";
+			postRequest.PostMode = "DIRECT_POST";
+			postRequest.SourceInfo.Source = "PULL_FROM_URL";
+
 			var url = "https://open.tiktokapis.com/v2/post/publish/content/init/";
 
 			using var request = new HttpRequestMessage(HttpMethod.Post, url);
@@ -135,10 +139,12 @@ namespace Polufabrikkat.Core.ApiClients
 			});
 			using var res = await _httpClient.SendAsync(request);
 
-			var response = await res.Content.ReadAsStringAsync();
-			_logger.LogInformation($"Post Photo Response: {response}");
+			var content = await res.Content.ReadFromJsonAsync<PostPhotoResponse>(new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+			});
 
-			return response;
+			return content.Data.PublishId;
 		}
 
 		public async Task<AuthTokenData> RefreshTokenData(AuthTokenData authTokenData)

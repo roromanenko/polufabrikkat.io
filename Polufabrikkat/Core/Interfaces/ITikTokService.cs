@@ -1,4 +1,5 @@
-﻿using Polufabrikkat.Core.Models.TikTok;
+﻿using Polufabrikkat.Core.Models.Entities;
+using Polufabrikkat.Core.Models.TikTok;
 
 namespace Polufabrikkat.Core.Interfaces
 {
@@ -7,6 +8,7 @@ namespace Polufabrikkat.Core.Interfaces
 		Task<AuthTokenData> GetAuthToken(string code, string processTikTokCallbackUrl);
 		string GetLoginUrl(string redirectUrl, string returnUrl, CallbackStrategy callbackStrategy);
 		TikTokHandleCallback GetTikTokHandleCallback(string state);
+		Task<Post> AddNewPost(Post post, List<Models.Entities.File> files);
 
 		ITikTokAuthenticatedService WithAuthData(AuthTokenData authTokenData);
 	}
@@ -15,6 +17,6 @@ namespace Polufabrikkat.Core.Interfaces
 	{
 		Task<QueryCreatorInfo> GetQueryCreatorInfo();
 		Task<UserInfo> GetUserInfo();
-		Task<string> PostPhoto(PostPhotoRequest apiRequest);
+		Task PublishPhotoPost(Post newPost);
 	}
 }
