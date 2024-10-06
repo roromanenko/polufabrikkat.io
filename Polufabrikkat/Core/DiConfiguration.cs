@@ -30,6 +30,7 @@ namespace Polufabrikkat.Core
 			services.AddScoped<IFileRepository, FileRepository>();
 			services.AddScoped<IPostRepository, PostRepository>();
 			services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IPostService, PostService>();
 
 			return services;
 		}
