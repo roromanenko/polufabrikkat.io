@@ -14,6 +14,9 @@ namespace Polufabrikkat.Site
 				.ForMember(x => x.DisplayName, act => act.MapFrom(scr => scr.UserInfo.DisplayName))
 				.ForMember(x => x.UnionId, act => act.MapFrom(scr => scr.UserInfo.UnionId));
 			CreateMap<QueryCreatorInfo, QueryCreatorInfoModel>();
+			CreateMap<Post, PostShortInto>()
+				.ForMember(x => x.Title, act => act.MapFrom(scr => scr.TikTokPostInfo.Title))
+				.ForMember(x => x.Description, act => act.MapFrom(scr => scr.TikTokPostInfo.Description));
 		}
 	}
 }

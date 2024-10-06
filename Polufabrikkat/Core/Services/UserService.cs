@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 using Polufabrikkat.Core.Constants;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.Entities;
@@ -59,7 +60,7 @@ namespace Polufabrikkat.Core.Services
 
 		public async Task<User> GetUserById(string userId)
 		{
-			return await _userRepository.GetUserById(userId);
+			return await _userRepository.GetUserById(ObjectId.Parse(userId));
 		}
 
 		public async Task UpdateUser(User user)
@@ -69,12 +70,12 @@ namespace Polufabrikkat.Core.Services
 
 		public Task RemoveTikTokUser(string userId, string tikTokUserUnionId)
 		{
-			return _userRepository.RemoveTikTokUser(userId, tikTokUserUnionId);
+			return _userRepository.RemoveTikTokUser(ObjectId.Parse(userId), tikTokUserUnionId);
 		}
 
 		public Task AddTikTokUser(string userId, TikTokUser tikTokUser)
 		{
-			return _userRepository.AddTikTokUser(userId, tikTokUser);
+			return _userRepository.AddTikTokUser(ObjectId.Parse(userId), tikTokUser);
 		}
 
 		public Task<TikTokUser> GetTikTokUserByUnionId(string unionId)

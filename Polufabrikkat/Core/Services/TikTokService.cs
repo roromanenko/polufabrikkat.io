@@ -53,20 +53,6 @@ namespace Polufabrikkat.Core.Services
 			return tikTokHandleCallback;
 		}
 
-		public async Task<Post> AddNewPost(Post post, List<Models.Entities.File> files)
-		{
-			var fileIds = new List<ObjectId>();
-			foreach (var file in files)
-			{
-				var addedFile = await _fileRepository.SaveFile(file);
-				fileIds.Add(addedFile.Id);
-			}
-			post.FileIds = fileIds;
-			post = await _postRepository.AddPost(post);
-
-			return post;
-		}
-
 		public ITikTokAuthenticatedService WithAuthData(AuthTokenData authTokenData)
 		{
 			return new TikTokAuthenticatedService(_tikTokApiClient, _userRepository,
@@ -136,6 +122,16 @@ namespace Polufabrikkat.Core.Services
 			};
 			var publishId = await _tikTokApiClient.PublishPhotoPost(_authTokenData, apiRequest);
 			await _postRepository.MarkAsSentToTikTok(post.Id, publishId);
+		}
+
+		public async Task<PostStatusData> GetPostStatus(string publishId)
+		{
+			await VerifyTokenDataAndRefreshIfNeeded();
+			var request = new PostStatusRequest
+			{
+				PublishId = publishId
+			};
+			return await _tikTokApiClient.GetPostStatus(_authTokenData, request);
 		}
 
 		private async Task VerifyTokenDataAndRefreshIfNeeded()

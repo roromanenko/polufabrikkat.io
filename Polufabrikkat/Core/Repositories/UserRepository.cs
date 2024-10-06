@@ -44,9 +44,9 @@ namespace Polufabrikkat.Core.Repositories
 			return user;
 		}
 
-		public Task<User> GetUserById(string userId)
+		public Task<User> GetUserById(ObjectId userId)
 		{
-			var filter = Builders<User>.Filter.Eq(u => u.Id, ObjectId.Parse(userId));
+			var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
 			var user = _userCollection.Find(filter).FirstOrDefaultAsync();
 			return user;
 		}
@@ -58,15 +58,15 @@ namespace Polufabrikkat.Core.Repositories
 			return _userCollection.ReplaceOneAsync(filter, user);
 		}
 
-		public Task RemoveTikTokUser(string userId, string tikTokUserUnionId)
+		public Task RemoveTikTokUser(ObjectId userId, string tikTokUserUnionId)
 		{
-			var filter = Builders<User>.Filter.Eq(u => u.Id, ObjectId.Parse(userId));
+			var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
 			var update = Builders<User>.Update.PullFilter(u => u.TikTokUsers, t => t.UserInfo.UnionId == tikTokUserUnionId);
 			return _userCollection.UpdateOneAsync(filter, update);
 
 		}
 
-		public async Task AddTikTokUser(string userId, TikTokUser tikTokUser)
+		public async Task AddTikTokUser(ObjectId userId, TikTokUser tikTokUser)
 		{
 			var userCollection = _database.GetCollection<User>();
 			var filterTikTokUser = Builders<User>.Filter.ElemMatch(u => u.TikTokUsers, t => t.UserInfo.UnionId == tikTokUser.UserInfo.UnionId);
@@ -76,7 +76,7 @@ namespace Polufabrikkat.Core.Repositories
 				throw new ArgumentException("This tiktok user is already added to another account");
 			}
 
-			var filter = Builders<User>.Filter.Eq(u => u.Id, ObjectId.Parse(userId));
+			var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
 			var update = Builders<User>.Update.Push(u => u.TikTokUsers, tikTokUser);
 			await userCollection.UpdateOneAsync(filter, update);
 		}

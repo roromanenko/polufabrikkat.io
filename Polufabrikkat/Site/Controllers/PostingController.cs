@@ -18,16 +18,16 @@ namespace Polufabrikkat.Site.Controllers
 		private readonly IUserService _userService;
 		private readonly ITikTokService _tikTokService;
 		private readonly IMapper _mapper;
-		private readonly IFileRepository _fileRepository;
+		private readonly IPostService _postService;
 
 		public PostingController(IOptions<FileUploadOptions> fileUploadOptions, IUserService userService,
-			ITikTokService tikTokService, IMapper mapper, IFileRepository fileRepository)
+			ITikTokService tikTokService, IMapper mapper, IPostService postService)
 		{
 			_fileUploadOptions = fileUploadOptions.Value;
 			_userService = userService;
 			_tikTokService = tikTokService;
 			_mapper = mapper;
-			_fileRepository = fileRepository;
+			_postService = postService;
 		}
 
 		public async Task<IActionResult> Index(PostingViewModel model)
@@ -54,6 +54,12 @@ namespace Polufabrikkat.Site.Controllers
 		[HttpPost]
 		public async Task<IActionResult> CreateNewPhotoPost([FromForm] NewPhotoPostRequest request)
 		{
+			var tiktokUser = await _userService.GetTikTokUserByUnionId(request.TikTokUserUnionId);
+			if (tiktokUser == null)
+			{
+				return BadRequest("Incorrect TikTok user id");
+			}
+
 			var fileUrls = new List<string>();
 			var filesToUpload = new List<Core.Models.Entities.File>();
 			foreach (var file in request.Files)
@@ -85,11 +91,6 @@ namespace Polufabrikkat.Site.Controllers
 				var absoluteUrl = Url.Action("Get", "File", new { fileName = newFile.FileName }, Request.Scheme, Request.Host.Value);
 				fileUrls.Add(absoluteUrl);
 			}
-			var tiktokUser = await _userService.GetTikTokUserByUnionId(request.TikTokUserUnionId);
-			if (tiktokUser == null)
-			{
-				return BadRequest("Incorrect TikTok user id");
-			}
 
 			var newPost = new Core.Models.Entities.Post
 			{
@@ -111,7 +112,7 @@ namespace Polufabrikkat.Site.Controllers
 				FileUrls = fileUrls
 			};
 
-			newPost = await _tikTokService.AddNewPost(newPost, filesToUpload);
+			newPost = await _postService.AddNewPost(newPost, filesToUpload);
 			await _tikTokService.WithAuthData(tiktokUser.AuthTokenData).PublishPhotoPost(newPost);
 			return Ok(newPost.Id.ToString());
 		}

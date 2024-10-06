@@ -10,5 +10,6 @@ namespace Polufabrikkat.Core.Interfaces
 		Task<QueryCreatorInfo> GetQueryCreatorInfo(AuthTokenData authData);
 		Task<AuthTokenData> RefreshTokenData(AuthTokenData authTokenData);
 		Task<string> PublishPhotoPost(AuthTokenData authData, PostPhotoRequest postRequest);
+		Task<PostStatusData> GetPostStatus(AuthTokenData authData, PostStatusRequest request);
 	}
 }

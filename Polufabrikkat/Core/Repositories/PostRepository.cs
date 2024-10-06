@@ -37,5 +37,11 @@ namespace Polufabrikkat.Core.Repositories
 				.Set(x => x.Status, PostStatus.SentToTikTok);
 			return _postsCollection.UpdateOneAsync(filter, update);
 		}
+
+		public Task<List<Post>> GetPostsByUserId(ObjectId userId)
+		{
+			var filter = Builders<Post>.Filter.Eq(u => u.UserId, userId);
+			return _postsCollection.Find(filter).ToListAsync();
+		}
 	}
 }

@@ -3,12 +3,9 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.TikTok;
-using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
-using System.Web;
 
 namespace Polufabrikkat.Core.ApiClients
 {
@@ -174,6 +171,30 @@ namespace Polufabrikkat.Core.ApiClients
 			});
 			content.RefreshedDate = DateTime.UtcNow;
 			return content;
+		}
+
+		public async Task<PostStatusData> GetPostStatus(AuthTokenData authData, PostStatusRequest request)
+		{
+			var url = "https://open.tiktokapis.com/v2/post/publish/status/fetch/";
+
+			using var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+			httpRequest.Headers.Authorization = new AuthenticationHeaderValue(authData.TokenType, authData.AccessToken);
+			httpRequest.Content = JsonContent.Create(request, new MediaTypeHeaderValue("application/json"), new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+			});
+
+			using var res = await _httpClient.SendAsync(httpRequest);
+			var content = await res.Content.ReadFromJsonAsync<PostStatusResponse>(new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+			});
+			if (content.Error?.Code != "ok")
+			{
+				throw TikTokApiExceptions.ThrowExceptionFromCode(content.Error.Code);
+			}
+
+			return content.Data;
 		}
 	}
 }

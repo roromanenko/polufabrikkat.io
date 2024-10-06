@@ -22,9 +22,9 @@ namespace Polufabrikkat.Core.Repositories
 			_filesCollection = _database.GetCollection<Models.Entities.File>();
 		}
 
-		public async Task<Models.Entities.File> GetFileById(string id)
+		public async Task<Models.Entities.File> GetFileById(ObjectId id)
 		{
-			return await _filesCollection.Find(f => f.Id == ObjectId.Parse(id)).FirstOrDefaultAsync();
+			return await _filesCollection.Find(f => f.Id == id).FirstOrDefaultAsync();
 		}
 
 		public async Task<Models.Entities.File> GetFileByName(string fileName)
