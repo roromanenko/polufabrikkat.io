@@ -1,6 +1,8 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.Entities;
+using Polufabrikkat.Core.Options;
 
 namespace Polufabrikkat.Core.Services
 {
@@ -8,11 +10,13 @@ namespace Polufabrikkat.Core.Services
 	{
 		private readonly IFileRepository _fileRepository;
 		private readonly IPostRepository _postRepository;
+		private readonly TikTokOptions _tikTokOptions;
 
-		public PostService(IFileRepository fileRepository, IPostRepository postRepository)
+		public PostService(IFileRepository fileRepository, IPostRepository postRepository, IOptions<TikTokOptions> tikTokOptions)
 		{
 			_fileRepository = fileRepository;
 			_postRepository = postRepository;
+			_tikTokOptions = tikTokOptions.Value;
 		}
 
 		public async Task<Post> AddNewPost(Post post, List<Models.Entities.File> files)
@@ -24,6 +28,7 @@ namespace Polufabrikkat.Core.Services
 				fileIds.Add(addedFile.Id);
 			}
 			post.FileIds = fileIds;
+			post.FileUrls = files.Select(x => Path.Combine(_tikTokOptions.PullFileFromBaseUrl, x.FileName)).ToList();
 			post = await _postRepository.AddPost(post);
 
 			return post;

@@ -60,7 +60,6 @@ namespace Polufabrikkat.Site.Controllers
 				return BadRequest("Incorrect TikTok user id");
 			}
 
-			var fileUrls = new List<string>();
 			var filesToUpload = new List<Core.Models.Entities.File>();
 			foreach (var file in request.Files)
 			{
@@ -88,8 +87,6 @@ namespace Polufabrikkat.Site.Controllers
 					FileData = memoryStream.ToArray()
 				};
 				filesToUpload.Add(newFile);
-				var absoluteUrl = Url.Action("Get", "File", new { fileName = newFile.FileName }, Request.Scheme, Request.Host.Value);
-				fileUrls.Add(absoluteUrl);
 			}
 
 			var newPost = new Core.Models.Entities.Post
@@ -109,7 +106,6 @@ namespace Polufabrikkat.Site.Controllers
 				Status = Core.Models.Entities.PostStatus.Created,
 				Created = DateTime.UtcNow,
 				ScheduledPublicationTime = null,
-				FileUrls = fileUrls
 			};
 
 			newPost = await _postService.AddNewPost(newPost, filesToUpload);
