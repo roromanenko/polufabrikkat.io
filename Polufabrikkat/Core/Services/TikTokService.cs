@@ -45,6 +45,7 @@ namespace Polufabrikkat.Core.Services
 
 			return _tikTokApiClient.GetLoginUrl(tiktokCallbackUrl, uniqueIdentificatorState);
 		}
+		public string GetRedirectToTikTokLoginUrl() => _tikTokOptions.RedirectToTikTokLoginUrl;
 
 		public TikTokHandleCallback GetTikTokHandleCallback(string state)
 		{

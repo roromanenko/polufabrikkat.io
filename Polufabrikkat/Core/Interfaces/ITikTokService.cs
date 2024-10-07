@@ -7,6 +7,7 @@ namespace Polufabrikkat.Core.Interfaces
 	{
 		Task<AuthTokenData> GetAuthToken(string code, string tiktokCallbackUrl);
 		string GetLoginUrl(string tiktokCallbackUrl, string returnUrl, CallbackStrategy callbackStrategy);
+		string GetRedirectToTikTokLoginUrl();
 		TikTokHandleCallback GetTikTokHandleCallback(string state);
 
 		ITikTokAuthenticatedService WithAuthData(AuthTokenData authTokenData);

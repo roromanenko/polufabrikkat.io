@@ -162,6 +162,7 @@ namespace Polufabrikkat.Site.Controllers
 				return View(nameof(Login), model);
 			}
 
+			string error = null;
 			try
 			{
 				await _userService.AddTikTokUser(UserId, new TikTokUser
@@ -169,17 +170,17 @@ namespace Polufabrikkat.Site.Controllers
 					AuthTokenData = tokenData,
 					UserInfo = userInfo
 				});
-
-				if (!string.IsNullOrEmpty(returnUrl))
-				{
-					return Redirect(returnUrl);
-				}
-				return RedirectToAction("Index", "User");
 			}
 			catch (ArgumentException ex)
 			{
-				return RedirectToAction("Index", "User", new { Error = ex.Message });
+				error = ex.Message;
 			}
+
+			if (!string.IsNullOrEmpty(returnUrl))
+			{
+				return Redirect(returnUrl);
+			}
+			return RedirectToAction("Index", "User", new { Error = error });
 		}
 	}
 }
