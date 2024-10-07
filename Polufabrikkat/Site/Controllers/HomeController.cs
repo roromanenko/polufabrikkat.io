@@ -24,7 +24,7 @@ namespace Polufabrikkat.Site.Controllers
 			_userService = userService;
 		}
 
-		public string ProcessTikTokCallbackUrl => Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme, Request.Host.Value);
+		public string ProcessTikTokCallbackUrl => Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme);
 
 		public IActionResult Index()
 		{
@@ -102,12 +102,14 @@ namespace Polufabrikkat.Site.Controllers
 
 		public IActionResult RedirectToTikTokLogin([FromQuery] string returnUrl, [FromQuery] CallbackStrategy? callbackStrategy)
 		{
+			_logger.LogInformation($"RedirectToTikTokLogin. ProcessTikTokCallbackUrl: {ProcessTikTokCallbackUrl}");
 			var loginUrl = _tikTokService.GetLoginUrl(ProcessTikTokCallbackUrl, returnUrl, callbackStrategy ?? CallbackStrategy.Login);
 			return Redirect(loginUrl);
 		}
 
 		public async Task<IActionResult> ProcessTikTokLoginResponse()
 		{
+			_logger.LogInformation($"ProcessTikTokLoginResponse. ProcessTikTokCallbackUrl: {ProcessTikTokCallbackUrl}");
 			var response = new TikTokCallbackResponse(Request.Query);
 
 			var tokenData = await _tikTokService.GetAuthToken(HttpUtility.UrlDecode(response.Code), ProcessTikTokCallbackUrl);
