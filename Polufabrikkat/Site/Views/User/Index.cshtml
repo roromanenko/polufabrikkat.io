@@ -21,7 +21,7 @@
 <div class="container">
 	<h2>@Model.User.Username</h2>
 
-	<a href='@Url.Action("RedirectToTikTokLogin", "Home", new { callbackStrategy = CallbackStrategy.AddTikTokUser })' class="btn btn-primary btn-lg">Add TikTok User</a>
+	<a href='@Url.Action("RedirectToTikTokLogin", "Home", new { callbackStrategy = CallbackStrategy.AddTikTokUser, returnUrl = Url.Action(null, null, null, Context.Request.Scheme) })' class="btn btn-primary btn-lg">Add TikTok User</a>
 
 	<div id="tiktok-users-app">
 		<h3>Current TikTok Users</h3>

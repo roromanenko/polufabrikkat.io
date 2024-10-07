@@ -52,26 +52,19 @@ namespace Polufabrikkat.Core.ApiClients
 			return content;
 		}
 
-		public string GetLoginUrl(string redirectUrl, string returnUrl, CallbackStrategy callbackStrategy)
+		public string GetLoginUrl(string redirectUrl, string uniqueIdentificator)
 		{
 			var clientKey = "***REMOVED***"; // from tiktok dev
 			var scope = "user.info.basic,video.publish,video.upload";
-			var uniqueIdentificatorState = Guid.NewGuid().ToString("N");
 			var responseType = "code";
 			var queryString = new Dictionary<string, string>()
 			{
 				["client_key"] = clientKey,
 				["scope"] = scope,
 				["redirect_uri"] = redirectUrl,
-				["state"] = uniqueIdentificatorState,
+				["state"] = uniqueIdentificator,
 				["response_type"] = responseType
 			};
-
-			_memoryCache.Set(uniqueIdentificatorState, new TikTokHandleCallback
-			{
-				CallbackStrategy = callbackStrategy,
-				ReturnUrl = returnUrl,
-			}, TimeSpan.FromMinutes(2));
 
 			var authorizationUrl = "https://www.tiktok.com/v2/auth/authorize/";
 			var url = new Uri(QueryHelpers.AddQueryString(authorizationUrl, queryString));

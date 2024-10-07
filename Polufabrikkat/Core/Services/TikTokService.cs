@@ -29,14 +29,21 @@ namespace Polufabrikkat.Core.Services
 			_postRepository = postRepository;
 			_tikTokOptions = tikTokOptions.Value;
 		}
-		public Task<AuthTokenData> GetAuthToken(string code, string processTikTokCallbackUrl)
+		public Task<AuthTokenData> GetAuthToken(string tiktokCallbackUrl, string code)
 		{
-			return _tikTokApiClient.GetAuthToken(code, processTikTokCallbackUrl);
+			return _tikTokApiClient.GetAuthToken(code, tiktokCallbackUrl);
 		}
 
-		public string GetLoginUrl(string redirectUrl, string returnUrl, CallbackStrategy callbackStrategy)
+		public string GetLoginUrl(string tiktokCallbackUrl, string returnUrl, CallbackStrategy callbackStrategy)
 		{
-			return _tikTokApiClient.GetLoginUrl(redirectUrl, returnUrl, callbackStrategy);
+			var uniqueIdentificatorState = Guid.NewGuid().ToString("N");
+			_memoryCache.Set(uniqueIdentificatorState, new TikTokHandleCallback
+			{
+				CallbackStrategy = callbackStrategy,
+				ReturnUrl = returnUrl,
+			}, _tikTokOptions.LoginCacheInfoTime);
+
+			return _tikTokApiClient.GetLoginUrl(tiktokCallbackUrl, uniqueIdentificatorState);
 		}
 
 		public TikTokHandleCallback GetTikTokHandleCallback(string state)

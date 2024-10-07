@@ -133,11 +133,7 @@ namespace Polufabrikkat.Site.Controllers
 			var user = await _userService.GetUserByTikTokId(userInfo.UnionId);
 			if (user != null)
 			{
-				var tiktokUser = user.TikTokUsers.First(x => x.UserInfo.UnionId == userInfo.UnionId);
-				// TODO seprate method for update authdata for tiktokuser
-				tiktokUser.AuthTokenData = tokenData;
-				await _userService.UpdateUser(user);
-
+				await _userService.UpdateAuthData(tokenData);
 				await LoginUser(user);
 
 				if (!string.IsNullOrEmpty(returnUrl))
@@ -174,6 +170,10 @@ namespace Polufabrikkat.Site.Controllers
 					UserInfo = userInfo
 				});
 
+				if (!string.IsNullOrEmpty(returnUrl))
+				{
+					return Redirect(returnUrl);
+				}
 				return RedirectToAction("Index", "User");
 			}
 			catch (ArgumentException ex)

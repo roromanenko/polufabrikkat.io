@@ -82,5 +82,10 @@ namespace Polufabrikkat.Core.Services
 		{
 			return _userRepository.GetTikTokUserByUnionId(unionId);
 		}
+
+		public Task UpdateAuthData(AuthTokenData authData)
+		{
+			return _userRepository.UpdateAuthData(authData);
+		}
 	}
 }
