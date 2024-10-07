@@ -13,18 +13,6 @@ namespace Polufabrikkat.Core
 	{
 		public static IServiceCollection AddCoreServices(this IServiceCollection services, IConfiguration configuration)
 		{
-			services.AddScoped(opt =>
-			{
-				var settings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString("MongoDb"));
-				settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-				var client = new MongoClient(settings);
-
-				return client;
-			});
-
-			services.Configure<MongoDbOptions>(configuration.GetSection(nameof(MongoDbOptions)));
-			services.Configure<TikTokOptions>(configuration.GetSection(nameof(TikTokOptions)));
-			services.Configure<TikTokApiOptions>(configuration.GetSection(nameof(TikTokApiOptions)));
 			services.AddScoped<ITikTokApiClient, TikTokApiClient>();
 			services.AddScoped<ITikTokService, TikTokService>();
 			services.AddScoped<IUserRepository, UserRepository>();

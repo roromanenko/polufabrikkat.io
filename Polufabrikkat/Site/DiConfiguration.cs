@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
+using MongoDB.Driver;
+using Polufabrikkat.Core.Options;
 using Polufabrikkat.Site.Options;
+using SixLabors.ImageSharp;
 
 namespace Polufabrikkat.Site
 {
@@ -8,7 +12,7 @@ namespace Polufabrikkat.Site
 	{
 		private const string SpecificOrigins = "_myAllowSpecificOrigins";
 
-		public static IServiceCollection AddSiteServices(this IServiceCollection services, IWebHostEnvironment environment)
+		public static IServiceCollection AddSiteServices(this IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
 		{
 			services.AddControllersWithViews();
 			services.AddCors(options =>
@@ -36,6 +40,41 @@ namespace Polufabrikkat.Site
 					options.LoginPath = "/Home/Login";
 					options.LogoutPath = "/Home/Logout";
 				});
+
+			services.Configure<MongoDbOptions>(configuration.GetSection(nameof(MongoDbOptions)));
+			services.Configure<TikTokOptions>(configuration.GetSection(nameof(TikTokOptions)));
+			services.Configure<TikTokApiOptions>(config =>
+			{
+				config = configuration.GetSection(nameof(TikTokApiOptions)).Get<TikTokApiOptions>();
+				if (environment.IsDevelopment())
+				{
+					config.ClientKey = configuration["Polufabrikkat:TikTokClientKey"];
+					config.ClientSecret = configuration["Polufabrikkat:TikTokClientSecret"];
+				}
+				else
+				{
+					config.ClientKey = Environment.GetEnvironmentVariable("TIKTOK_CLIENT_KEY");
+					config.ClientSecret = Environment.GetEnvironmentVariable("TIKTOK_CLIENT_SECRET");
+				}
+			});
+			services.AddScoped(opt =>
+			{
+				string connectionString;
+				if (environment.IsDevelopment())
+				{
+					connectionString = configuration["Polufabrikkat:MongodbConnection"];
+				}
+				else
+				{
+					connectionString = Environment.GetEnvironmentVariable("MONGODB_STRING");
+				}
+
+				var settings = MongoClientSettings.FromConnectionString(connectionString);
+				settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+				var client = new MongoClient(settings);
+
+				return client;
+			});
 
 			return services;
 		}
