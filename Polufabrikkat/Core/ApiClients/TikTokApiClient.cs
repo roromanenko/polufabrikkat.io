@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.TikTok;
+using Polufabrikkat.Core.Options;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -13,26 +14,23 @@ namespace Polufabrikkat.Core.ApiClients
 	{
 		private readonly ILogger<TikTokApiClient> _logger;
 		private readonly HttpClient _httpClient;
-		private readonly IMemoryCache _memoryCache;
+		private readonly TikTokApiOptions _apiOptions;
 
-		public TikTokApiClient(ILogger<TikTokApiClient> logger, HttpClient httpClient, IMemoryCache memoryCache)
+		public TikTokApiClient(ILogger<TikTokApiClient> logger, HttpClient httpClient, IOptions<TikTokApiOptions> apiOptions)
 		{
 			_logger = logger;
 			_httpClient = httpClient;
-			_memoryCache = memoryCache;
+			_apiOptions = apiOptions.Value;
 		}
 
 		public async Task<AuthTokenData> GetAuthToken(string decodedCode, string redirectUrl)
 		{
 			var accessTokenUrl = "https://open.tiktokapis.com/v2/oauth/token/";
 
-			var clientKey = "***REMOVED***"; // from tiktok dev
-			var clientSecret = "***REMOVED***";
-
 			var queryString = new Dictionary<string, string>()
 			{
-				["client_key"] = clientKey,
-				["client_secret"] = clientSecret,
+				["client_key"] = _apiOptions.ClientKey,
+				["client_secret"] = _apiOptions.ClientSecret,
 				["code"] = decodedCode,
 				["grant_type"] = "authorization_code",
 				["redirect_uri"] = redirectUrl,
@@ -54,13 +52,11 @@ namespace Polufabrikkat.Core.ApiClients
 
 		public string GetLoginUrl(string redirectUrl, string uniqueIdentificator)
 		{
-			var clientKey = "***REMOVED***"; // from tiktok dev
-			var scope = "user.info.basic,video.publish,video.upload";
 			var responseType = "code";
 			var queryString = new Dictionary<string, string>()
 			{
-				["client_key"] = clientKey,
-				["scope"] = scope,
+				["client_key"] = _apiOptions.ClientKey,
+				["scope"] = _apiOptions.Scope,
 				["redirect_uri"] = redirectUrl,
 				["state"] = uniqueIdentificator,
 				["response_type"] = responseType
@@ -75,13 +71,12 @@ namespace Polufabrikkat.Core.ApiClients
 		public async Task<UserInfo> GetUserInfo(AuthTokenData authData)
 		{
 			var getUserInfoUrl = "https://open.tiktokapis.com/v2/user/info/";
-			var fields = "open_id,union_id,display_name";
 
 			var url = new UriBuilder(getUserInfoUrl);
-			url.Query = $"fields={fields}";
+			url.Query = $"fields={_apiOptions.UserInfoFields}";
 
 			using var request = new HttpRequestMessage(HttpMethod.Get, url.Uri);
-			request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(authData.TokenType, authData.AccessToken);
+			request.Headers.Authorization = new AuthenticationHeaderValue(authData.TokenType, authData.AccessToken);
 
 			using var res = await _httpClient.SendAsync(request);
 			var content = await res.Content.ReadFromJsonAsync<UserInfoResponse>(new JsonSerializerOptions
@@ -141,13 +136,10 @@ namespace Polufabrikkat.Core.ApiClients
 		{
 			var accessTokenUrl = "https://open.tiktokapis.com/v2/oauth/token/";
 
-			var clientKey = "***REMOVED***"; // from tiktok dev
-			var clientSecret = "***REMOVED***";
-
 			var queryString = new Dictionary<string, string>()
 			{
-				["client_key"] = clientKey,
-				["client_secret"] = clientSecret,
+				["client_key"] = _apiOptions.ClientKey,
+				["client_secret"] = _apiOptions.ClientSecret,
 				["grant_type"] = "refresh_token",
 				["refresh_token"] = authTokenData.RefreshToken,
 			};

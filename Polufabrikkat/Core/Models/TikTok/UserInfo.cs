@@ -25,6 +25,10 @@
 		/// The unique identification of the user in the current application.
 		/// </summary>
 		public string OpenId { get; set; }
+		/// <summary>
+		/// User's profile image
+		/// </summary>
+		public string AvatarUrl { get; set; }
 	}
 
 	public class UserInfoError
