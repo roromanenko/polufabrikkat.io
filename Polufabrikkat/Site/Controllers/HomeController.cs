@@ -24,8 +24,6 @@ namespace Polufabrikkat.Site.Controllers
 			_userService = userService;
 		}
 
-		public string ProcessTikTokCallbackUrl => Url.Action("ProcessTikTokLoginResponse", "Home", null, Request.Scheme);
-
 		public IActionResult Index()
 		{
 			return View();
@@ -102,17 +100,15 @@ namespace Polufabrikkat.Site.Controllers
 
 		public IActionResult RedirectToTikTokLogin([FromQuery] string returnUrl, [FromQuery] CallbackStrategy? callbackStrategy)
 		{
-			_logger.LogInformation($"RedirectToTikTokLogin. ProcessTikTokCallbackUrl: {ProcessTikTokCallbackUrl}");
-			var loginUrl = _tikTokService.GetLoginUrl(ProcessTikTokCallbackUrl, returnUrl, callbackStrategy ?? CallbackStrategy.Login);
+			var loginUrl = _tikTokService.GetLoginUrl(_tikTokService.GetProcessTikTokLoginResponseUrl(), returnUrl, callbackStrategy ?? CallbackStrategy.Login);
 			return Redirect(loginUrl);
 		}
 
 		public async Task<IActionResult> ProcessTikTokLoginResponse()
 		{
-			_logger.LogInformation($"ProcessTikTokLoginResponse. ProcessTikTokCallbackUrl: {ProcessTikTokCallbackUrl}");
 			var response = new TikTokCallbackResponse(Request.Query);
 
-			var tokenData = await _tikTokService.GetAuthToken(HttpUtility.UrlDecode(response.Code), ProcessTikTokCallbackUrl);
+			var tokenData = await _tikTokService.GetAuthToken(HttpUtility.UrlDecode(response.Code), _tikTokService.GetProcessTikTokLoginResponseUrl());
 			var userInfo = await _tikTokService.WithAuthData(tokenData).GetUserInfo();
 
 			TikTokHandleCallback tikTokHandleCallback = _tikTokService.GetTikTokHandleCallback(response.State);

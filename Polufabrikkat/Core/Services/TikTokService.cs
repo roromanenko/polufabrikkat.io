@@ -60,6 +60,8 @@ namespace Polufabrikkat.Core.Services
 			return tikTokHandleCallback;
 		}
 
+		public string GetProcessTikTokLoginResponseUrl() => _tikTokOptions.ProcessTikTokLoginResponseUrl;
+
 		public ITikTokAuthenticatedService WithAuthData(AuthTokenData authTokenData)
 		{
 			return new TikTokAuthenticatedService(_tikTokApiClient, _userRepository,
