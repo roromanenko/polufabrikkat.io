@@ -45,7 +45,9 @@ namespace Polufabrikkat.Site
 			services.Configure<TikTokOptions>(configuration.GetSection(nameof(TikTokOptions)));
 			services.Configure<TikTokApiOptions>(config =>
 			{
-				config = configuration.GetSection(nameof(TikTokApiOptions)).Get<TikTokApiOptions>();
+				var pubConfig = configuration.GetSection(nameof(TikTokApiOptions)).Get<TikTokApiOptions>();
+				config.Scope = pubConfig.Scope;
+				config.UserInfoFields = pubConfig.UserInfoFields;
 				if (environment.IsDevelopment())
 				{
 					config.ClientKey = configuration["Polufabrikkat:TikTokClientKey"];
