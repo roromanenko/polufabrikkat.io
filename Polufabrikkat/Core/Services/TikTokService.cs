@@ -29,7 +29,7 @@ namespace Polufabrikkat.Core.Services
 			_postRepository = postRepository;
 			_tikTokOptions = tikTokOptions.Value;
 		}
-		public Task<AuthTokenData> GetAuthToken(string tiktokCallbackUrl, string code)
+		public Task<AuthTokenData> GetAuthToken(string code, string tiktokCallbackUrl)
 		{
 			return _tikTokApiClient.GetAuthToken(code, tiktokCallbackUrl);
 		}
