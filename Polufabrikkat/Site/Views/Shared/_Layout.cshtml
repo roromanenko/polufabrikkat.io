@@ -8,13 +8,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Polufabrikkat</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Polufabrikkat</title>
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
 </head>
 @await RenderSectionAsync("Styles", required: false)
 <!-- Google tag (gtag.js) -->
@@ -28,50 +28,54 @@
 </script>
 
 <body>
-    <div class="main-container">
+	<div class="main-container">
 		<header class="header">
-			<div class="container">
-				<img src="~/img/logo.png" alt="logo" class="header_logo" />
+			<div class="header-container">
+				<div>
+					<img src="~/img/logo.png" alt="logo" class="header-logo-img" />
+				</div>
 
-				<nav class="header_nav">
-					<ul class="header_list">
-						<a class="active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+				<div>
+					<nav class="header-nav">
+						<a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 						<a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
 						<a asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
 						@if (isAdmin)
 						{
 							<a asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
 						}
-					</ul>
-				</nav>
+					</nav>
+				</div>
 
 				@if (authorized)
 				{
 					<div>
-						<a class="user-name" href='@Url.Action("Index", "User")'>@userName</a>
-						<a href='@Url.Action("Logout", "Home")' class="btn btn-secondary" style="padding-left: 10px;">Sign Off</a>
+						<a class="user-link" href='@Url.Action("Index", "User")'>@userName</a>
+						@* <a href='@Url.Action("Logout", "Home")' class="button button-secondary">Sign Off</a> *@
 					</div>
 				}
 				else
 				{
-					<a href='@Url.Action("Login", "Home")' class="btn btn-primary btn-lg">Login</a>
+					<div>
+						<a href='@Url.Action("Login", "Home")' class="button button-primary">Login</a>
+					</div>
 				}
 			</div>
 		</header>
 
-		<div>
-			<main role="main" class="main-content" class="pb-3">
-				@RenderBody()
-			</main>
-		</div>
+		<main role="main" class="main-content">
+			@RenderBody()
+		</main>
 
-		<footer class="border-top footer text-muted">
-			<div class="container">
-				&copy; 2024 - Future Posting - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a><span>  </span><a asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
+		<footer class="footer">
+			<div>
+				<span>&copy; 2024 Future Posting. All rights reserved.</span>
 			</div>
+			<nav class="footer-nav">
+				<a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a><span>  </span><a asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
+			</nav>
 		</footer>
 		<script src="~/lib/jquery/dist/jquery.min.js"></script>
-		<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="~/js/site.js" asp-append-version="true"></script>
 		@await RenderSectionAsync("Scripts", required: false)
 	</div>

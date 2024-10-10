@@ -1,114 +1,134 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Playfair+Display:wght@900&family=Source+Sans+Pro:wght@350&display=swap');
-
-body {
-    margin: 0;
-    font-family: 'Source Sans Pro', sans-serif;
-    background-color: #F0F4F8;
-    color: #2C3E50;
-}
-
-a {
-    font-family: 'Montserrat', serif;
-    color: #2C3E50;
-    text-decoration: none;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-
-}
-
-.container {
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 15px;
-}
-
-.header {
-    padding: 25px 0;
-}
-
-.header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-
-.header_logo {
-    width: 200px;
-}
-
-.header_nav a {
-    font-size: 18px;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-}
-
-.header_nav a.active {
-    color: #2C3E50;
-    opacity: 1;
-}
-
-.header_nav a:hover {
-    color: #2C3E50;
-    opacity: 0.9;
-}
-
-.header_list {
-    display: flex;
-    gap: 30px;
-}
-
-.btn-primary {
-    background-color: #4682b4; /* Button background color */
-    color: #f0f4f8; /* Button text color */
-    border: none;
-    padding: 10px 20px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    box-shadow: 0 0px 10px rgba(92, 165, 226, 0.9);
-}
-
-.btn-primary:hover {
-    background-color: #5ca5e2; /* Button background color on hover */
-}
-
-.btn-secondary {
-    background-color: #ffffff00; /* Button background color */
-    color: #4682b4; /* Button text color */
-    border: none;
-    padding: 0px 0px;
-    font-size: 18px; /* Button font size */
-    font-weight: bold;
-    border-radius: 25px;
-    transition: none; /* Убираем эффект перехода */
-}
-
-.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
-    background-color: #ffffff00; /* Сохраняем цвет фона */
-    color: #4682b4; /* Сохраняем цвет текста */
-    box-shadow: none; /* Убираем тени при наведении */
+html, body {
+	margin: 0;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight: 400;
+	background-color: #F0F4F8;
+	color: #2C3E50;
 }
 
 .main-container {
-	background-image: url("/img/welcome_background.svg");
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: center;
+	margin: 0 auto;
+	padding: 0 3vw;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
 }
 
 .main-content {
-	min-height: 500px;
+	flex: 1
 }
 
-.user-name {
-	font-size: 18px;
+.header {
+	padding: 25px 0;
+}
+
+.header-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.header-logo-img {
+	width: 200px;
+}
+
+.header-container a {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
+}
+
+.header-nav a {
+	color: #2C3E50;
+	margin-left: 20px;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.header-nav a.active {
+	color: #2C3E50;
+	opacity: 1;
+}
+
+.header-nav a:hover {
+	color: #FFA500;
+}
+
+.footer {
+	border-top: 1px solid #e5e5e5;
+	padding: 20px 0;
+	text-align: center;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	margin: 1vh 0;
+}
+
+.footer-nav a {
+	color: #2C3E50;
+	margin: 0 10px;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.footer-nav a:hover {
+	color: #696969;
+}
+
+.user-link {
+	font-weight: 700;
+	color: #2C3E50; /* Dark navy color */
+	text-decoration: none;
+}
+
+.user-link:hover {
+	color: #FFA500; /* Orange on hover */
+}
+
+h1, h2, h3, .logo {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
+}
+
+.button {
+	border: none;
+	padding: 10px 20px;
 	font-weight: bold;
+	border-radius: 25px;
+	cursor: pointer;
+	transition: background-color 0.3s, transform 0.3s;
+}
+
+.button-primary {
+	background-color: #FFA500; /* Primary button color (Orange) */
+	color: white;
+}
+
+.button-primary:hover {
+	background-color: #cc8400; /* Darker shade of orange on hover */
+	color: white;
+}
+
+.button-secondary {
+	background-color: #DCDCDC; /* Secondary button color (Gainsboro) */
+	color: #2C3E50; /* Dark navy text color */
+}
+
+.button-secondary:hover {
+	background-color: #b0b0b0;
+	color: #2C3E50
+}
+
+a {
+	text-decoration: none;
+	color: #4682B4; /* Link color */
+	transition: color 0.3s ease;
+}
+
+a:hover {
+	color: #315f7a; /* Hover color */
+}
+
+a:active {
+	color: #FFA500; /* Active color */
 }
