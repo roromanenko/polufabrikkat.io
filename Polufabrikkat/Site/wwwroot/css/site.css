@@ -4,6 +4,7 @@ html, body {
 	font-weight: 400;
 	background-color: #F0F4F8;
 	color: #2C3E50;
+	scrollbar-gutter: stable both-edges;
 }
 
 .main-container {
@@ -22,36 +23,36 @@ html, body {
 	padding: 25px 0;
 }
 
-.header-container {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
+	.header-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 
-.header-logo-img {
-	width: 200px;
-}
+	.header-logo-img {
+		width: 200px;
+	}
 
-.header-container a {
-	font-family: 'Montserrat', sans-serif;
-	font-weight: 700;
-}
+	.header-container a {
+		font-family: 'Montserrat', sans-serif;
+		font-weight: 700;
+	}
 
-.header-nav a {
-	color: #2C3E50;
-	margin-left: 20px;
-	text-decoration: none;
-	transition: color 0.3s ease;
-}
+	.header-nav a {
+		color: #2C3E50;
+		margin-left: 20px;
+		text-decoration: none;
+		transition: color 0.3s ease;
+	}
 
-.header-nav a.active {
-	color: #2C3E50;
-	opacity: 1;
-}
+		.header-nav a.active {
+			color: #2C3E50;
+			opacity: 1;
+		}
 
-.header-nav a:hover {
-	color: #FFA500;
-}
+		.header-nav a:hover {
+			color: #FFA500;
+		}
 
 .footer {
 	border-top: 1px solid #e5e5e5;
@@ -64,16 +65,16 @@ html, body {
 	margin: 1vh 0;
 }
 
-.footer-nav a {
-	color: #2C3E50;
-	margin: 0 10px;
-	text-decoration: none;
-	transition: color 0.3s ease;
-}
+	.footer-nav a {
+		color: #2C3E50;
+		margin: 0 10px;
+		text-decoration: none;
+		transition: color 0.3s ease;
+	}
 
-.footer-nav a:hover {
-	color: #696969;
-}
+	.footer-nav a:hover {
+		color: #696969;
+	}
 
 .user-link {
 	font-weight: 700;
@@ -81,9 +82,9 @@ html, body {
 	text-decoration: none;
 }
 
-.user-link:hover {
-	color: #FFA500; /* Orange on hover */
-}
+	.user-link:hover {
+		color: #FFA500; /* Orange on hover */
+	}
 
 h1, h2, h3, .logo {
 	font-family: 'Montserrat', sans-serif;
@@ -93,31 +94,32 @@ h1, h2, h3, .logo {
 .button {
 	border: none;
 	padding: 10px 20px;
+	font-family: 'Montserrat', sans-serif;
 	font-weight: bold;
 	border-radius: 25px;
 	cursor: pointer;
 	transition: background-color 0.3s, transform 0.3s;
 }
 
-.button-primary {
-	background-color: #FFA500; /* Primary button color (Orange) */
-	color: white;
-}
+	.button-primary {
+		background-color: #FFA500; /* Primary button color (Orange) */
+		color: white;
+	}
 
-.button-primary:hover {
-	background-color: #cc8400; /* Darker shade of orange on hover */
-	color: white;
-}
+	.button-primary:hover {
+		background-color: #cc8400; /* Darker shade of orange on hover */
+		color: white;
+	}
 
-.button-secondary {
-	background-color: #DCDCDC; /* Secondary button color (Gainsboro) */
-	color: #2C3E50; /* Dark navy text color */
-}
+	.button-secondary {
+		background-color: #DCDCDC; /* Secondary button color (Gainsboro) */
+		color: #2C3E50; /* Dark navy text color */
+	}
 
-.button-secondary:hover {
-	background-color: #b0b0b0;
-	color: #2C3E50
-}
+	.button-secondary:hover {
+		background-color: #b0b0b0;
+		color: #2C3E50
+	}
 
 a {
 	text-decoration: none;
@@ -125,10 +127,16 @@ a {
 	transition: color 0.3s ease;
 }
 
-a:hover {
-	color: #315f7a; /* Hover color */
-}
+	a:hover {
+		color: #315f7a; /* Hover color */
+	}
 
-a:active {
-	color: #FFA500; /* Active color */
+	a:active {
+		color: #FFA500; /* Active color */
+	}
+
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px;
 }

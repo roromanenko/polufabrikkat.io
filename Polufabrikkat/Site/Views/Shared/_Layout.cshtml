@@ -38,8 +38,7 @@
 				<div>
 					<nav class="header-nav">
 						<a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-						<a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
-						<a asp-area="" asp-controller="Home" asp-action="TermsOfService">Terms Of Service</a>
+						<a asp-area="" asp-controller="Posting" asp-action="Index">New Post</a>
 						@if (isAdmin)
 						{
 							<a asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
@@ -51,7 +50,6 @@
 				{
 					<div>
 						<a class="user-link" href='@Url.Action("Index", "User")'>@userName</a>
-						@* <a href='@Url.Action("Logout", "Home")' class="button button-secondary">Sign Off</a> *@
 					</div>
 				}
 				else

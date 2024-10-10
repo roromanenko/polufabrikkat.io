@@ -20,8 +20,8 @@
 
 <div class="container">
 	<h2>@Model.User.Username</h2>
-
-	<a href='@Model.AddTikTokUserUrl' class="btn btn-primary btn-lg">Add TikTok User</a>
+	<a href='@Url.Action("Logout", "Home")' class="button button-secondary">Sign Off</a>
+	<a href='@Model.AddTikTokUserUrl' class="button button-primary">Add TikTok User</a>
 
 	<div id="tiktok-users-app">
 		<h3>Current TikTok Users</h3>
