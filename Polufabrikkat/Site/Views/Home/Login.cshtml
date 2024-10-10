@@ -13,8 +13,6 @@
 
 @section Scripts
 {
-	<!-- For client-side validation -->
-	<partial name="_ValidationScriptsPartial" />
 	<script src="~/js/pages/login/login.js" asp-append-version="true"></script>
 }
 
@@ -23,7 +21,7 @@
 
 	@if (!string.IsNullOrEmpty(Model.Error))
 	{
-		<div class="alert alert-danger">
+		<div class="alert-error">
 			@Model.Error
 		</div>
 	}
@@ -31,69 +29,64 @@
 	<div class="login-form" v-show="currentComponent == 'Login'">
 		<form asp-action="Login" method="post">
 			<div class="form-group">
-				<label asp-for="Username" class="control-label"></label>
-				<input asp-for="Username" class="form-control" />
-				<span asp-validation-for="Username" class="text-danger"></span>
+				<label asp-for="Username"></label>
+				<input asp-for="Username"/>
 			</div>
 
 			<div class="form-group">
-				<label asp-for="Password" class="control-label"></label>
-				<input asp-for="Password" type="password" class="form-control" />
-				<span asp-validation-for="Password" class="text-danger"></span>
+				<label asp-for="Password"></label>
+				<input asp-for="Password" type="password"/>
 			</div>
 
 			<!-- Hidden field to capture ReturnUrl -->
 			<input asp-for="ReturnUrl" type="hidden" />
 
 			<div class="form-group">
-				<button type="submit" class="btn btn-primary">Login</button>
+				<button type="submit" class="button button-primary">Login</button>
 			</div>
 		</form>
 		<div class="social-login-section">
-			<h6>or login using</h6>
+			<h4>or login using</h4>
 
 			<!-- Google Login Button -->
-			@* <a class="btn btn-primary btn-social btn-google" href="~/Account/ExternalLogin?provider=Google&returnUrl=@Model.ReturnUrl">
+			@* <a class="button button-primary button-google" href="~/Account/ExternalLogin?provider=Google&returnUrl=@Model.ReturnUrl">
 			Login with Google
 			</a> *@
 
 			<!-- TikTok Login Button -->
-			<a class="btn btn-primary btn-social btn-tiktok" href='@Url.Action("RedirectToTikTokLogin", "Home", new {returnUrl = Model.ReturnUrl, callbackStrategy = CallbackStrategy.Login})'>
+			<a class="button button-tiktok" href='@Url.Action("RedirectToTikTokLogin", "Home", new {returnUrl = Model.ReturnUrl, callbackStrategy = CallbackStrategy.Login})'>
 				Login with TikTok
 			</a>
 		</div>
 		<div class="social-login-section">
-			<button class="btn btn-secondary btn-social" @@click="switchComponent('Register')">Switch to Register</button>
+			<button class="button button-secondary" @@click="switchComponent('Register')">Switch to Register</button>
 		</div>
 	</div>
 	<div class="login-form" v-show="currentComponent == 'Register'">
 		<form asp-action="Register" method="post">
 			<div class="form-group">
-				<label asp-for="Username" class="control-label"></label>
-				<input asp-for="Username" class="form-control" />
-				<span asp-validation-for="Username" class="text-danger"></span>
+				<label asp-for="Username"></label>
+				<input asp-for="Username" />
 			</div>
 
 			<div class="form-group">
 				<label asp-for="Password" class="control-label"></label>
-				<input asp-for="Password" type="password" class="form-control" />
-				<span asp-validation-for="Password" class="text-danger"></span>
+				<input asp-for="Password" type="password" />
 			</div>
 			<div class="form-group">
 				<label asp-for="ConfirmPassword" class="control-label"></label>
-				<input asp-for="ConfirmPassword" type="password" class="form-control" />
-				<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+				<input asp-for="ConfirmPassword" type="password" />
 			</div>
 
 			<!-- Hidden field to capture ReturnUrl -->
 			<input asp-for="ReturnUrl" type="hidden" />
 
 			<div class="form-group">
-				<button type="submit" class="btn btn-primary">Register</button>
+				<button type="submit" class="button button-primary">Register</button>
 			</div>
 		</form>
 		<div class="social-login-section">
-			<button class="btn btn-secondary btn-social" @@click="switchComponent('Login')">Switch to Login</button>
+			<button class="button button-secondary" @@click="switchComponent('Login')">Switch to Login</button>
 		</div>
 	</div>
 </div>

@@ -23,10 +23,24 @@
 	margin-bottom: 20px;
 }
 
-/* Additional styling for form controls */
+/* Form Group */
 .form-group {
-	margin-bottom: 15px;
+	margin-bottom: 20px;
 }
+
+	.form-group label {
+		display: block;
+		font-weight: bold;
+		margin-bottom: 5px;
+	}
+
+	.form-group input {
+		width: 95%;
+		padding: 10px;
+		font-size: 16px;
+		border: 1px solid #DCDCDC;
+		border-radius: 5px;
+	}
 
 .form-control {
 	width: 100%;
@@ -36,8 +50,9 @@
 	border-radius: 5px;
 }
 
-.alert {
+.alert-error {
 	margin-bottom: 15px;
+	color: red;
 }
 
 .social-login-section {
@@ -45,29 +60,23 @@
 	margin-top: 20px;
 }
 
-.social-login-section h6 {
-	margin-bottom: 20px;
-}
-
-.btn-social {
-	width: 100%;
-	text-align: center;
-	padding: 10px;
-	margin-bottom: 10px;
-}
-
-.btn-google {
+.button-google {
+	display: block;
+	color: white;
 	background-color: #DB4437;
 }
 
-.btn-tiktok {
+.button-tiktok {
+	display: block;
+	color: white;
 	background-color: #000000;
 }
 
-.btn-google:hover {
+.button-google:hover {
 	background-color: #a33e2f;
 }
 
-.btn-tiktok:hover {
+.button-tiktok:hover {
+	color: white;
 	background-color: #333333;
 }

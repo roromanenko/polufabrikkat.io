@@ -86,7 +86,7 @@ html, body {
 		color: #FFA500; /* Orange on hover */
 	}
 
-h1, h2, h3, .logo {
+h1, h2, h3, h4, .logo {
 	font-family: 'Montserrat', sans-serif;
 	font-weight: 700;
 }
