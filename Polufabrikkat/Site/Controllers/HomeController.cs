@@ -77,6 +77,11 @@ namespace Polufabrikkat.Site.Controllers
 		{
 			try
 			{
+				if (model.Password != model.ConfirmPassword)
+				{
+					throw new ArgumentException("Password and Confirm Password not equal");
+				}
+
 				User user = await _userService.RegisterUser(model.Username, model.Password);
 				await LoginUser(user);
 				if (!string.IsNullOrEmpty(model.ReturnUrl))

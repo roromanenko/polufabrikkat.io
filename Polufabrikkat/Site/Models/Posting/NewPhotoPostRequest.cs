@@ -9,6 +9,7 @@
 		public bool AutoAddMusic { get; set; }
 		public int PhotoCoverIndex { get; set; }
 		public string TikTokUserUnionId { get; set; }
+		public DateTime? ScheduledPublicationTime { get; set; }
 
 		public List<IFormFile> Files { get; set; }
 	}

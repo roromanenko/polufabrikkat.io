@@ -3,7 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using MongoDB.Driver;
 using Polufabrikkat.Core.Options;
+using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Options;
+using Polufabrikkat.Site.Services;
 using SixLabors.ImageSharp;
 
 namespace Polufabrikkat.Site
@@ -77,6 +79,8 @@ namespace Polufabrikkat.Site
 
 				return client;
 			});
+			services.AddHttpContextAccessor();
+			services.AddScoped<IDateTimeProvider, DateTimeProvider>();
 
 			return services;
 		}

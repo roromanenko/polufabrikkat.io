@@ -2,28 +2,49 @@
     ViewData["Title"] = "Future Posting";
 }
 
-<head>
-    <link rel="stylesheet" href="~/css/indexstyles.css" asp-append-version="true" />
-</head>
+@section Styles
+{
+	<link rel="stylesheet" href="~/css/pages/home.css" asp-append-version="true" />
+}
 
-<section class="welcome">
-    <div class="container">
-        <div class="welcome_text">
-            <h1 class="welcome_title">Social media management service</h1>
-            <p class="welcome_desc">
-                TikTok Delayed Publication Service is a convenient tool,
-                allowing users to schedule and publish content on TikTok at a later time and date.
-                With easy registration and account management,
-                users can maintain full control over their content while leveraging the platform's scheduling capabilities.
-                By ensuring timely and strategic content releases,
-                users can optimize their TikTok presence for maximum engagement and impact.
-            </p>
-            <div>
-                <a href='https://www.youtube.com/' class="btn btn-secondary btn-lg">How it works</a> <!-- Add tutorial video -->
-            </div>
-			<div>
-				<a asp-controller="Posting" class="btn btn-secondary btn-lg">Try</a>
+<!-- Hero Section -->
+<section class="hero">
+	<div class="container">
+		<h1>Manage Your TikTok Posts Effortlessly</h1>
+		<p>Create, schedule, and track your TikTok posts with ease. Future Posting simplifies your workflow!</p>
+		<a href='@Url.Action("Index", "Posting")' class="button button-primary">Get Sarted</a>
+	</div>
+</section>
+
+<!-- Key Features Section -->
+<section class="features">
+	<div class="container">
+		<h2>Key Features</h2>
+		<div class="feature-list">
+			<div class="feature-item">
+				<h3>Create Posts</h3>
+				<p>Easily create posts with captions, hashtags, and media uploads.</p>
 			</div>
-        </div>
-    </div>
+			<div class="feature-item">
+				<h3>Schedule Posts</h3>
+				<p>Choose a time and date to publish your posts automatically.</p>
+			</div>
+			<div class="feature-item">
+				<h3>Post History</h3>
+				<p>View and manage all of your published and scheduled posts in one place.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works">
+	<div class="container">
+		<h2>How It Works</h2>
+		<ol>
+			<li><a href='@Url.Action("Index", "User")'>Sign Up</a> and link your TikTok account.</li>
+			<li><a href='@Url.Action("Index", "Posting")'>Create</a> or schedule posts directly from our platform.</li>
+			<li><a href='@Url.Action("Index", "Posting")'>Track</a> your posts’ performance and manage future content.</li>
+		</ol>
+	</div>
 </section>

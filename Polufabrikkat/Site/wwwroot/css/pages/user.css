@@ -1,3 +1,58 @@
-﻿.btn-danger {
-	margin-left: 2%;
+﻿/* Container */
+.container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 40px 20px;
 }
+
+/* Profile Section */
+.profile-section h1 {
+	font-size: 36px;
+	margin-bottom: 40px;
+}
+
+.profile-info {
+	margin-bottom: 40px;
+}
+
+	.profile-info p {
+		font-size: 18px;
+	}
+
+/* Change Password Button */
+.change-password {
+	margin-bottom: 40px;
+}
+
+/* TikTok Users Section */
+.tiktok-users {
+	margin-bottom: 40px;
+}
+
+	.tiktok-users h2 {
+		font-size: 24px;
+		margin-bottom: 20px;
+	}
+
+.tiktok-list {
+	list-style-type: none;
+	padding: 0;
+}
+
+	.tiktok-list li {
+		margin-bottom: 20px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+		.tiktok-list li p {
+			font-size: 18px;
+			margin: 0;
+		}
+
+/* TikTok Actions */
+.tiktok-actions {
+	margin-bottom: 40px;
+}
+

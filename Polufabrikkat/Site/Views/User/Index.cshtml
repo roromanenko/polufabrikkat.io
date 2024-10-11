@@ -18,29 +18,46 @@
 	<script src="~/js/pages/user/user.js" asp-append-version="true"></script>
 }
 
-<div class="container">
-	<h2>@Model.User.Username</h2>
+<!-- User Profile Section -->
+<section class="profile-section">
+	<div class="container" id="tiktok-users-app">
+		<h1>User Profile</h1>
 
-	<a href='@Model.AddTikTokUserUrl' class="btn btn-primary btn-lg">Add TikTok User</a>
+		<!-- Display User Information -->
+		<div class="profile-info">
+			<p><strong>Username:</strong> @Model.User.Username</p>
+			@* <p><strong>Email:</strong> johndoe@example.com</p> *@
+		</div>
 
-	<div id="tiktok-users-app">
-		<h3>Current TikTok Users</h3>
-		<ul>
-			<li v-for="user in tiktokUsers" :key="user.id">
-				<span>{{user.displayName}}</span>
+		<!-- Change Password Button -->
+		<div class="change-password">
+			<button class="button button-primary">Change Password</button>
+		</div>
 
-				<!-- Remove button with loading state -->
-				<button class="btn btn-danger btn-sm float-right"
-						@@click="user.remove()"
-						:disabled="user.loading">
-					Remove
-				</button>
-			</li>
-		</ul>
+		<!-- List of Linked TikTok Users -->
+		<div class="tiktok-users">
+			<h2>Linked TikTok Users</h2>
+			<ul class="tiktok-list">
+				<li v-for="user in tiktokUsers" :key="user.id">
+					<p>{{user.displayName}}</p>
+					<button class="button button-secondary" @@click="user.remove()" :disabled="user.loading">
+						Unlink
+					</button>
+				</li>
+			</ul>
+		</div>
 
-		<p v-if="!tiktokUsers.length">No TikTok Users added yet.</p>
+		<!-- Link New TikTok User -->
+		<div class="tiktok-actions">
+			<a class="button button-primary" href='@Model.AddTikTokUserUrl'>Link New TikTok User</a>
+		</div>
+
+		<!-- Sign Off Button -->
+		<div class="sign-off">
+			<a class="button button-secondary" href='@Url.Action("Logout", "Home")'>Sign Off</a>
+		</div>
 	</div>
-</div>
+</section>
 
 <script>
 	var removeTikTokUserUrl = '@Url.Action("RemoveTikTokUser", "User")';
