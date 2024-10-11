@@ -16,102 +16,107 @@
 	ViewData["Title"] = "New Post";
 }
 
-<div class="container" id="posting-app">
-	<label>
-		Select TikTok user to create a post
-		<select v-model="selectedTikTokUser" @@change="onUserChange">
-			<option value="">-- Select a user --</option>
-			<option v-for="user in tiktokUsers" :key="user.unionId" :value="user">
-				{{ user.displayName }}
-			</option>
-		</select>
-	</label>
-	<div>
-		<label v-if="selectedTikTokUser">
-			Selected User:
-			<span>{{selectedTikTokUser.displayName}}</span>
-		</label>
-	</div>
-	<div v-if="selectedTikTokUser.queryCreatorInfo">
-		<div class="creator-info-box">
-			<h4>Creator Information</h4>
+<section class="create-post-section">
+	<div class="container" id="posting-app">
+		<h1>Create New Post</h1>
 
-			<div class="info-group">
-				<label>Creator Avatar:</label>
-				<img :src="selectedTikTokUser.queryCreatorInfo.creatorAvatarUrl" alt="Creator Avatar" />
-			</div>
-
-			<div class="info-group">
-				<label>Creator Nickname:</label>
-				<span>{{ selectedTikTokUser.queryCreatorInfo.creatorNickname }}</span>
-			</div>
-
-			<div class="info-group">
-				<label>Creator Username:</label>
-				<span>{{ selectedTikTokUser.queryCreatorInfo.creatorUsername }}</span>
-			</div>
-
-			<div class="info-group">
-				<label>Duet Disabled:</label>
-				<span>{{ selectedTikTokUser.queryCreatorInfo.duetDisabled ? 'Yes' : 'No' }}</span>
-			</div>
-
-			<div class="info-group">
-				<label>Max Video Post Duration (Sec):</label>
-				<span>{{ selectedTikTokUser.queryCreatorInfo.maxVideoPostDurationSec }}</span>
-			</div>
-
-			<div class="info-group">
-				<label>Privacy Level Options:</label>
-				<select>
-					<option v-for="privacyLevelOptions in selectedTikTokUser.queryCreatorInfo.privacyLevelOptions" :key="privacyLevelOptions">
-						{{privacyLevelOptions}}
-					</option>
-				</select>
-			</div>
-
-			<div class="info-group">
-				<label>Stitch Disabled:</label>
-				<span>{{ selectedTikTokUser.queryCreatorInfo.stitchDisabled ? 'Yes' : 'No' }}</span>
-			</div>
-
-			<div class="info-group">
-				<label>Comment Disabled:</label>
-				<span>{{ selectedTikTokUser.queryCreatorInfo.commentDisabled ? 'Yes' : 'No' }}</span>
+		<!-- Step 1: Choose TikTok Account -->
+		<div class="tiktok-account-section">
+			<label>Choose TikTok Account: </label>
+			<div class="account-list">
+				<label class="account-badge" v-for="user in tiktokUsers" :key="user.unionId" @@click="onUserChange(user.unionId)" :class="{ 'account-badge-active': userSelected(user.unionId) }">
+					<span class="username">{{ user.displayName }}</span>
+				</label>
 			</div>
 		</div>
-		<div>
-			<h3>Create new post</h3>
-			<form v-on:submit.prevent="uploadFiles">
-				<input type="file" multiple @@change="handleFileChange" />
-				<input type="text" v-model="title" placeholder="Title" />
-				<input type="text" v-model="description" placeholder="Description" />
+
+		<!-- TikTok Account Info (Displays After Selection) -->
+		<div class="account-info" v-if="selectedTikTokUser.queryCreatorInfo">
+			<img :src="selectedTikTokUser.queryCreatorInfo.creatorAvatarUrl" alt="Avatar" class="avatar">
+			<div class="account-details">
+				<p><strong>Nickname:</strong> <span>{{ selectedTikTokUser.queryCreatorInfo.creatorNickname }}</span></p>
+				<p><strong>Username:</strong> <span>{{ selectedTikTokUser.queryCreatorInfo.creatorUsername }}</span></p>
+				<p><strong>Duet Disabled:</strong> <span>{{ selectedTikTokUser.queryCreatorInfo.duetDisabled ? 'Yes' : 'No' }}</span></p>
+				<p><strong>Max Video Post Duration (Sec):</strong> <span>{{ selectedTikTokUser.queryCreatorInfo.maxVideoPostDurationSec }}</span></p>
+				<p><strong>Privacy Level Options:</strong> <span>{{ privacyLevelsString }}</span></p>
+				<p><strong>Stitch Disabled:</strong> <span>{{ selectedTikTokUser.queryCreatorInfo.stitchDisabled ? 'Yes' : 'No' }}</span></p>
+				<p><strong>Comment Disabled:</strong> <span>{{ selectedTikTokUser.queryCreatorInfo.commentDisabled ? 'Yes' : 'No' }}</span></p>
+			</div>
+		</div>
+
+		<!-- Step 2: Upload Photos and Enter Details -->
+		<div class="upload-section">
+			<label for="title">Title</label>
+			<input type="text" v-model="title" name="title">
+
+			<label for="description">Description</label>
+			<textarea v-model="description" name="description" @@dblclick="resetTextAreaHeight" ref="textarea"></textarea>
+
+			<label for="privacy-level">Select Privacy Level</label>
+			<select v-model="privacyLevel" name="privacy-level">
+				<option v-for="privacyLevelOptions in selectedTikTokUser?.queryCreatorInfo?.privacyLevelOptions" :key="privacyLevelOptions">
+					{{privacyLevelOptions}}
+				</option>
+			</select>
+
+			<!-- Checkboxes -->
+			<div class="checkboxes">
 				<label>
-					Privacy Level
-					<select v-model="privacyLevel">
-						<option v-for="privacyLevelOptions in selectedTikTokUser.queryCreatorInfo.privacyLevelOptions" :key="privacyLevelOptions">
-							{{privacyLevelOptions}}
-						</option>
-					</select>
-				</label>
-				<label>
-					Disable Comment
-					<input type="checkbox" v-model="disableComment" />
+					Disable Comments
+					<input type="checkbox" v-model="disableComment" name="disable-comments">
 				</label>
 				<label>
 					Auto Add Music
-					<input type="checkbox" v-model="autoAddMusic" />
+					<input type="checkbox" v-model="autoAddMusic" name="auto-add-music">
 				</label>
-				<label>
-					Photo Cover Index
-					<input type="number" v-model="photoCoverIndex" />
-				</label>
-				<button type="submit">Upload</button>
-			</form>
+			</div>
+
+			<div class="upload-file-container">
+				<div class="upload-file-left">
+					<label for="photos">Upload Photos</label>
+					<input type="file" name="photos" multiple @@change="handleFileChange" />
+					<label for="photo-cover-index">Photo Cover Index</label>
+					<input type="number" v-model="photoCoverIndex" name="photo-cover-index" min="1">
+				</div>
+				<div class="upload-file-right">
+					<div class="image-preview"
+						v-if="imagePreviews.length > 0"
+						v-for="(image, index) in imagePreviews"
+						:key="index"
+						draggable="true"
+						@@dragstart="dragStart(index)"
+						@@dragover.prevent
+						@@drop="drop(index)"
+						@@click="removeImage(index)">
+						<img :src="image" alt="Preview" />
+						<p>Image Index: {{ index + 1 }}</p>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- Step 3: Publish or Schedule -->
+		<div class="publish-options">
+			<label>
+				<input type="radio" name="publish-option" value="publishNow" v-model="publishOption">
+				Publish Now
+			</label>
+			<label>
+				<input type="radio" name="publish-option" value="schedule" v-model="publishOption">
+				Schedule for Later
+			</label>
+			<input type="datetime-local" class="schedule-time" name="schedule-time"
+				v-if="publishOption == 'schedule'"
+				v-model="scheduleTime">
+		</div>
+
+		<!-- Submit Button -->
+		<div class="form-actions">
+			<button type="submit" class="button button-primary" @@click="uploadFiles">Submit Post</button>
 		</div>
 	</div>
-
-</div>
+</section>
 
 <script>
 	var selectTikTokUserUrl = '@Url.Action("SelectTikTokUser", "Posting")';

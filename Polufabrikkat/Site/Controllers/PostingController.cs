@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Site.Helpers;
+using Polufabrikkat.Site.Interfaces;
 using Polufabrikkat.Site.Models.Posting;
 using Polufabrikkat.Site.Models.User;
 using Polufabrikkat.Site.Options;
@@ -19,15 +20,18 @@ namespace Polufabrikkat.Site.Controllers
 		private readonly ITikTokService _tikTokService;
 		private readonly IMapper _mapper;
 		private readonly IPostService _postService;
+		private readonly IDateTimeProvider _dateTimeProvider;
 
 		public PostingController(IOptions<FileUploadOptions> fileUploadOptions, IUserService userService,
-			ITikTokService tikTokService, IMapper mapper, IPostService postService)
+			ITikTokService tikTokService, IMapper mapper, IPostService postService,
+			IDateTimeProvider dateTimeProvider)
 		{
 			_fileUploadOptions = fileUploadOptions.Value;
 			_userService = userService;
 			_tikTokService = tikTokService;
 			_mapper = mapper;
 			_postService = postService;
+			_dateTimeProvider = dateTimeProvider;
 		}
 
 		public async Task<IActionResult> Index(PostingViewModel model)
@@ -58,6 +62,14 @@ namespace Polufabrikkat.Site.Controllers
 			if (tiktokUser == null)
 			{
 				return BadRequest("Incorrect TikTok user id");
+			}
+			if (request.Files == null || !request.Files.Any())
+			{
+				return BadRequest("Files are not selected");
+			}
+			if (request.PhotoCoverIndex <= 0 || request.PhotoCoverIndex > request.Files.Count)
+			{
+				return BadRequest("Cover index not correct");
 			}
 
 			var filesToUpload = new List<Core.Models.Entities.File>();
@@ -98,18 +110,22 @@ namespace Polufabrikkat.Site.Controllers
 					AutoAddMusic = request.AutoAddMusic,
 					Description = request.Description,
 					DisableComment = request.DisableComment,
-					PhotoCoverIndex = request.PhotoCoverIndex,
+					PhotoCoverIndex = request.PhotoCoverIndex - 1,
 					PrivacyLevel = request.PrivacyLevel,
 					Title = request.Title
 				},
 				Type = Core.Models.Entities.PostType.Photo,
 				Status = Core.Models.Entities.PostStatus.Created,
 				Created = DateTime.UtcNow,
-				ScheduledPublicationTime = null,
+				ScheduledPublicationTime = _dateTimeProvider.ConvertToUtcFromClientTimezone(request.ScheduledPublicationTime),
 			};
 
 			newPost = await _postService.AddNewPost(newPost, filesToUpload);
-			await _tikTokService.WithAuthData(tiktokUser.AuthTokenData).PublishPhotoPost(newPost);
+
+			if (newPost.ScheduledPublicationTime == null)
+			{
+				await _tikTokService.WithAuthData(tiktokUser.AuthTokenData).PublishPhotoPost(newPost);
+			}
 			return Ok(newPost.Id.ToString());
 		}
 	}
