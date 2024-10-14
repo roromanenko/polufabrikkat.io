@@ -133,14 +133,17 @@ namespace Polufabrikkat.Core.Services
 			await _postRepository.MarkAsSentToTikTok(post.Id, publishId);
 		}
 
-		public async Task<PostStatusData> GetPostStatus(string publishId)
+		public async Task<PostStatusData> RefreshTikTokPostStatus(string postId, string publishId)
 		{
 			await VerifyTokenDataAndRefreshIfNeeded();
 			var request = new PostStatusRequest
 			{
 				PublishId = publishId
 			};
-			return await _tikTokApiClient.GetPostStatus(_authTokenData, request);
+			var postStatusData = await _tikTokApiClient.GetPostStatus(_authTokenData, request);
+			await _postRepository.SetPostStatusData(ObjectId.Parse(postId), postStatusData);
+
+			return postStatusData;
 		}
 
 		private async Task VerifyTokenDataAndRefreshIfNeeded()

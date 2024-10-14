@@ -18,6 +18,6 @@ namespace Polufabrikkat.Core.Interfaces
 		Task<QueryCreatorInfo> GetQueryCreatorInfo();
 		Task<UserInfo> GetUserInfo();
 		Task PublishPhotoPost(Post newPost);
-		Task<PostStatusData> GetPostStatus(string publishId);
+		Task<PostStatusData> RefreshTikTokPostStatus(string postId, string publishId);
 	}
 }

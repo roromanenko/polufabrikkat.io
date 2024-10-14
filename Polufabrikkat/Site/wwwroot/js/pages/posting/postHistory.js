@@ -2,6 +2,7 @@
 	data() {
 		return {
 			posts: this.initializePosts(posts),
+			postUrl: postUrl
 		};
 	},
 	computed: {
@@ -15,6 +16,9 @@
 					scheduledPublicationTime: x.scheduledPublicationTime ? new Date(x.scheduledPublicationTime).toLocaleString() : null
 				}
 			})
+		},
+		getPostUrl(id) {
+			return `${postUrl}/${id}`;
 		}
 	}
 });

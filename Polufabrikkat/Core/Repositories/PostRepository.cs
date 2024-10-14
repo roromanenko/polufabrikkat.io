@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using Polufabrikkat.Core.Extentions;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.Entities;
+using Polufabrikkat.Core.Models.TikTok;
 using Polufabrikkat.Core.Options;
 
 namespace Polufabrikkat.Core.Repositories
@@ -42,6 +43,20 @@ namespace Polufabrikkat.Core.Repositories
 		{
 			var filter = Builders<Post>.Filter.Eq(u => u.UserId, userId);
 			return _postsCollection.Find(filter).ToListAsync();
+		}
+
+		public Task<Post> GetPostById(ObjectId postId)
+		{
+			var filter = Builders<Post>.Filter.Eq(u => u.Id, postId);
+			return _postsCollection.Find(filter).FirstOrDefaultAsync();
+		}
+
+		public Task SetPostStatusData(ObjectId postId, PostStatusData postStatusData)
+		{
+			var filter = Builders<Post>.Filter.Eq(u => u.Id, postId);
+			var update = Builders<Post>.Update.Set(x => x.TikTokPostStatus, postStatusData);
+
+			return _postsCollection.UpdateOneAsync(filter, update);
 		}
 	}
 }

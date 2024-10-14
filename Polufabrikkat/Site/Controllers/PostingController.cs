@@ -49,6 +49,17 @@ namespace Polufabrikkat.Site.Controllers
 			return View(model);
 		}
 
+		public async Task<IActionResult> Post(PostViewModel model)
+		{
+			var post = await _postService.GetPostById(model.Id);
+			model.Post = _mapper.Map<PostModel>(post);
+
+			model.Post.Created = _dateTimeProvider.ConvertToClienTimezoneFromUtc(model.Post.Created);
+			model.Post.ScheduledPublicationTime = _dateTimeProvider.ConvertToClienTimezoneFromUtc(model.Post.ScheduledPublicationTime);
+
+			return View(model);
+		}
+
 		[HttpGet]
 		public async Task<IActionResult> SelectTikTokUser(string unionId)
 		{
@@ -135,6 +146,16 @@ namespace Polufabrikkat.Site.Controllers
 				await _tikTokService.WithAuthData(tiktokUser.AuthTokenData).PublishPhotoPost(newPost);
 			}
 			return Ok(newPost.Id.ToString());
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> RefreshTikTokPostStatus([FromBody] RefreshTikTokPublicationStatusRequest request)
+		{
+			var tikTokUser = await _userService.GetTikTokUserByUnionId(request.TikTokUserUnionId);
+			var result = await _tikTokService.WithAuthData(tikTokUser.AuthTokenData).RefreshTikTokPostStatus(request.PostId, request.PublicationId);
+
+
+			return Json(_mapper.Map<PostStatusDataModel>(result));
 		}
 	}
 }

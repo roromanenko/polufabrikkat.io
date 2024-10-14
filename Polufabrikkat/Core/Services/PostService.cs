@@ -38,5 +38,10 @@ namespace Polufabrikkat.Core.Services
 		{
 			return _postRepository.GetPostsByUserId(ObjectId.Parse(userId));
 		}
+
+		public Task<Post> GetPostById(string id)
+		{
+			return _postRepository.GetPostById(ObjectId.Parse(id));
+		}
 	}
 }

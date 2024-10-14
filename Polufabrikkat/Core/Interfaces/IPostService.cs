@@ -6,5 +6,6 @@ namespace Polufabrikkat.Core.Interfaces
 	{
 		Task<Post> AddNewPost(Post post, List<Models.Entities.File> files);
 		Task<List<Post>> GetPostsByUserId(string userId);
+		Task<Post> GetPostById(string id);
 	}
 }

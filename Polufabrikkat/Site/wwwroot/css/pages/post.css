@@ -1,0 +1,24 @@
+﻿.preview-box {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px; /* Increase space between images */
+}
+
+.image-preview {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 5px;
+}
+
+	.image-preview img {
+		width: 150px; /* Increase the image size */
+		height: 150px;
+		object-fit: cover; /* Ensure image fits inside the box */
+		border: 1px solid #DCDCDC;
+		border-radius: 5px;
+	}
+
+.nested-info {
+	margin-left: 2vw;
+}

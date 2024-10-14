@@ -21,6 +21,7 @@ namespace Polufabrikkat.Site
 
 			CreateMap<TikTokPostInfo, TikTokPostInfoModel>();
 			CreateMap<Post, PostModel>();
+			CreateMap<PostStatusData, PostStatusDataModel>();
 		}
 	}
 }

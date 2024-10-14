@@ -1,0 +1,68 @@
+﻿@using Polufabrikkat.Site.Models.Posting
+@using System.Text.Json
+@model PostViewModel
+
+@section Styles
+{
+	<link rel="stylesheet" href="~/css/pages/post.css" asp-append-version="true" />
+}
+
+@section Scripts
+{
+	<script src="~/js/pages/posting/post.js" asp-append-version="true"></script>
+}
+
+@{
+	ViewData["Title"] = "Post Details";
+}
+
+<div class="container" id="post-app">
+	<h1>@ViewData["Title"]</h1>
+
+	<div>
+		<h3>@Model.Post.TikTokPostInfo.Title</h3>
+		<p>@Model.Post.TikTokPostInfo.Description</p>
+		<p><strong>Status:</strong> @Model.Post.Status.ToString()</p>
+		<p><strong>Type:</strong> @Model.Post.Type.ToString()</p>
+		<p><strong>Created:</strong> @Model.Post.Created.ToString()</p>
+		<p><strong>Privacy Level:</strong> @Model.Post.TikTokPostInfo.PrivacyLevel</p>
+		<div>
+			<p><strong>TikTok Publication Status:</strong></p>
+			<div v-if="post.tikTokPostStatus" class="nested-info">
+				<p v-if="post.tikTokPostStatus.status">
+					<strong>Status:</strong> {{post.tikTokPostStatus.status}}
+				</p>
+				<p v-if="post.tikTokPostStatus.failReason">
+					<strong>Fail Reason:</strong> {{post.tikTokPostStatus.failReason}}
+				</p>
+			</div>
+			<div v-else class="nested-info">
+				<p>Status not fetch</p>
+			</div>
+			@if(Model.Post.Status == Polufabrikkat.Core.Models.Entities.PostStatus.SentToTikTok)
+			{
+				<button class="button button-primary" @@click="refreshTikTokPostStatus">Refresh status</button>
+			}
+		</div>
+		@if(Model.Post.ScheduledPublicationTime != null)
+		{
+			<p><strong>Scheduled Time:</strong> @Model.Post.ScheduledPublicationTime.ToString()</p>
+		}
+		<div>
+			<p><strong>Files:</strong></p>
+			<div class="preview-box nested-info">
+				@foreach (var fileUrl in Model.Post.FileUrls)
+				{
+					<div class="image-preview">
+						<img src="@fileUrl" alt="Preview" />
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	var refreshTikTokPostStatusUrl = '@Url.Action("RefreshTikTokPostStatus", "Posting")';
+	var post = @Html.Raw(JsonSerializer.Serialize(Model.Post, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+</script>

@@ -31,7 +31,7 @@
 			<p><strong>Files Count:</strong> {{ post.filesCount }}</p>
 			<!-- Actions: View, Edit, Delete -->
 			<div class="post-actions">
-				<button class="button button-primary">View</button>
+				<a class="button button-primary" :href="getPostUrl(post.id)">View</a>
 			</div>
 		</div>
 	</div>
@@ -43,5 +43,6 @@
 </div>
 
 <script>
+	var postUrl = '@Url.Action("Post", "Posting")';
 	var posts = @Html.Raw(JsonSerializer.Serialize(Model.Posts, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
 </script>
