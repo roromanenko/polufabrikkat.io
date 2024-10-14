@@ -17,5 +17,6 @@ namespace Polufabrikkat.Core.Interfaces
 		Task<TikTokUser> GetTikTokUserByUnionId(string unionId);
 		Task<QueryCreatorInfo> GetQueryCreatorInfoByOpenId(string openId);
 		Task UpdateQueryCreatorInfo(string openId, QueryCreatorInfo queryCreatorInfo);
+		Task ChangePassword(ObjectId userId, string newPasswordHash);
 	}
 }

@@ -118,5 +118,13 @@ namespace Polufabrikkat.Core.Repositories
 
 			return _userCollection.UpdateOneAsync(filter, update);
 		}
+
+		public Task ChangePassword(ObjectId userId, string newPasswordHash)
+		{
+			var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
+			var update = Builders<User>.Update.Set(x => x.PasswordHash, newPasswordHash);
+
+			return _userCollection.UpdateOneAsync(filter, update);
+		}
 	}
 }

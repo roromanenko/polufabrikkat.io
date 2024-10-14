@@ -51,6 +51,7 @@ namespace Polufabrikkat.Core.Models.Entities
 		/// </summary>
 		SentToTikTok = 1,
 		Failed = 2,
-		Published = 3
+		Published = 3,
+		Canceled = 4
 	}
 }

@@ -36,9 +36,17 @@ namespace Polufabrikkat.Site.Controllers
 		}
 
 		[HttpDelete]
-		public async Task RemoveTikTokUser(string unionId)
+		public async Task<IActionResult> RemoveTikTokUser(string unionId)
 		{
 			await _userService.RemoveTikTokUser(UserId, unionId);
+			return Ok();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> ChangePassword([FromBody] NewPasswordRequest request)
+		{
+			await _userService.ChangePassword(UserId, request.NewPassword);
+			return Ok();
 		}
 	}
 }

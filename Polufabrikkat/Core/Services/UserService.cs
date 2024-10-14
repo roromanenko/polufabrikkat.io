@@ -87,5 +87,10 @@ namespace Polufabrikkat.Core.Services
 		{
 			return _userRepository.UpdateAuthData(authData);
 		}
+
+		public Task ChangePassword(string userId, string newPassword)
+		{
+			return _userRepository.ChangePassword(ObjectId.Parse(userId), _passwordHasher.HashPassword(null, newPassword));
+		}
 	}
 }

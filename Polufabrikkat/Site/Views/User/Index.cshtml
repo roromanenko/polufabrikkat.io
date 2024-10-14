@@ -31,7 +31,12 @@
 
 		<!-- Change Password Button -->
 		<div class="change-password">
-			<button class="button button-primary">Change Password</button>
+			<button class="button button-primary" @@click="showPasswordPopup">Change Password</button>
+		</div>
+
+		<!-- Sign Off Button -->
+		<div class="sign-off">
+			<a class="button button-secondary" href='@Url.Action("Logout", "Home")'>Sign Off</a>
 		</div>
 
 		<!-- List of Linked TikTok Users -->
@@ -52,14 +57,42 @@
 			<a class="button button-primary" href='@Model.AddTikTokUserUrl'>Link New TikTok User</a>
 		</div>
 
-		<!-- Sign Off Button -->
-		<div class="sign-off">
-			<a class="button button-secondary" href='@Url.Action("Logout", "Home")'>Sign Off</a>
+		<!-- Change Password Popup (Modal) -->
+		<div v-if="isPopupShows" class="modal-overlay">
+			<div class="modal-content">
+				<h2>Change Password</h2>
+				<div v-if="newPasswordErrors" class="alert-error">
+					{{ newPasswordErrors }}
+				</div>
+
+				<div class="form-group">
+					<label for="newPassword">New Password:</label>
+					<input type="password"
+						   v-model="newPassword"
+						   name="newPassword"
+						   placeholder="Enter new password" />
+				</div>
+
+				<div class="form-group">
+					<label for="confirmNewPassword">Confirm New Password:</label>
+					<input type="password"
+						   v-model="confirmNewPassword"
+						   name="confirmNewPassword"
+						   placeholder="Confirm new password" />
+				</div>
+
+				<!-- Buttons -->
+				<div class="modal-buttons">
+					<button class="button button-primary" @@click="changePassword">Change</button>
+					<button class="button button-secondary" @@click="hidePasswordPopup">Cancel</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>
 
 <script>
 	var removeTikTokUserUrl = '@Url.Action("RemoveTikTokUser", "User")';
+	var changePasswordUrl = '@Url.Action("ChangePassword", "User")';
 	var modelTikTokUsers = @Html.Raw(JsonSerializer.Serialize(Model.User.TikTokUsers, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
 </script>
