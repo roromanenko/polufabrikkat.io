@@ -144,4 +144,4 @@
 	}
 });
 
-app.mount('#posting-app');
+app.mount('#new-post-app');

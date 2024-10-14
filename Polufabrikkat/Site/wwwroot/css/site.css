@@ -139,7 +139,7 @@ a {
 	}
 
 .container {
-	max-width: 1200px;
+	max-width: 80vw;
 	margin: 0 auto;
-	padding: 0 20px;
+	padding: 40px 20px;
 }

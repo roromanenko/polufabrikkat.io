@@ -44,7 +44,8 @@
 
 				<div>
 					<nav class="header-nav">
-						<a href='@Url.Action("Index", "Posting")'>New Post</a>
+						<a href='@Url.Action("NewPost", "Posting")'>New Post</a>
+						<a href='@Url.Action("Index", "Posting")'>History</a>
 						@if (isAdmin)
 						{
 							<a href='@Url.Action("Index", "Admin")'>Admin</a>

@@ -34,10 +34,18 @@ namespace Polufabrikkat.Site.Controllers
 			_dateTimeProvider = dateTimeProvider;
 		}
 
-		public async Task<IActionResult> Index(PostingViewModel model)
+		public async Task<IActionResult> NewPost(NewPostViewModel model)
 		{
 			var user = await _userService.GetUserById(UserId);
 			model.TikTokUsers = _mapper.Map<List<TikTokUserModel>>(user.TikTokUsers);
+			return View(model);
+		}
+
+		public async Task<IActionResult> Index(PostHistoryViewModel model)
+		{
+			var posts = await _postService.GetPostsByUserId(UserId);
+			model.Posts = posts.Select(x => new ShortPostModel(x, _dateTimeProvider)).ToList();
+
 			return View(model);
 		}
 
