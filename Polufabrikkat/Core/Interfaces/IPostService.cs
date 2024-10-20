@@ -5,7 +5,10 @@ namespace Polufabrikkat.Core.Interfaces
 	public interface IPostService
 	{
 		Task<Post> AddNewPost(Post post, List<Models.Entities.File> files);
-		Task<List<Post>> GetPostsByUserId(string userId);
 		Task<Post> GetPostById(string id);
+		Task<List<Post>> GetFilteredPosts(
+			PostStatus[] statuses = null,
+			DateTime? scheduledPublicationTimeFrom = null,
+			string userId = null);
 	}
 }

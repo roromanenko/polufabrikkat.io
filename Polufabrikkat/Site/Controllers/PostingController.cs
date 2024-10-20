@@ -43,7 +43,7 @@ namespace Polufabrikkat.Site.Controllers
 
 		public async Task<IActionResult> Index(PostHistoryViewModel model)
 		{
-			var posts = await _postService.GetPostsByUserId(UserId);
+			var posts = await _postService.GetFilteredPosts(userId: UserId);
 			model.Posts = posts.Select(x => new ShortPostModel(x, _dateTimeProvider)).ToList();
 
 			return View(model);

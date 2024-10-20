@@ -39,12 +39,6 @@ namespace Polufabrikkat.Core.Repositories
 			return _postsCollection.UpdateOneAsync(filter, update);
 		}
 
-		public Task<List<Post>> GetPostsByUserId(ObjectId userId)
-		{
-			var filter = Builders<Post>.Filter.Eq(u => u.UserId, userId);
-			return _postsCollection.Find(filter).ToListAsync();
-		}
-
 		public Task<Post> GetPostById(ObjectId postId)
 		{
 			var filter = Builders<Post>.Filter.Eq(u => u.Id, postId);
@@ -57,6 +51,34 @@ namespace Polufabrikkat.Core.Repositories
 			var update = Builders<Post>.Update.Set(x => x.TikTokPostStatus, postStatusData);
 
 			return _postsCollection.UpdateOneAsync(filter, update);
+		}
+
+		public async Task<List<Post>> GetFilteredPosts(
+			PostStatus[] statuses = null,
+			DateTime? scheduledPublicationTimeFrom = null,
+			ObjectId? userId = null)
+		{
+			var filterBuilder = Builders<Post>.Filter;
+			var filters = new List<FilterDefinition<Post>>();
+
+			if (statuses != null && statuses.Any())
+			{
+				filters.Add(filterBuilder.In(p => p.Status, statuses));
+			}
+
+			if (scheduledPublicationTimeFrom.HasValue)
+			{
+				filters.Add(filterBuilder.Gte(p => p.ScheduledPublicationTime, scheduledPublicationTimeFrom.Value));
+			}
+
+			if (userId.HasValue)
+			{
+				filters.Add(filterBuilder.Eq(p => p.UserId, userId.Value));
+			}
+
+			var filter = filters.Any() ? filterBuilder.And(filters) : FilterDefinition<Post>.Empty;
+
+			return await _postsCollection.Find(filter).ToListAsync();
 		}
 	}
 }

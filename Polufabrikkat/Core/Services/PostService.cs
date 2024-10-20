@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using Polufabrikkat.Core.Interfaces;
 using Polufabrikkat.Core.Models.Entities;
 using Polufabrikkat.Core.Options;
@@ -34,14 +35,18 @@ namespace Polufabrikkat.Core.Services
 			return post;
 		}
 
-		public Task<List<Post>> GetPostsByUserId(string userId)
-		{
-			return _postRepository.GetPostsByUserId(ObjectId.Parse(userId));
-		}
-
 		public Task<Post> GetPostById(string id)
 		{
 			return _postRepository.GetPostById(ObjectId.Parse(id));
+		}
+
+		public Task<List<Post>> GetFilteredPosts(
+			PostStatus[] statuses = null,
+			DateTime? scheduledPublicationTimeFrom = null,
+			string userId = null)
+		{
+			return _postRepository.GetFilteredPosts(statuses, scheduledPublicationTimeFrom,
+				string.IsNullOrEmpty(userId) ? null : ObjectId.Parse(userId));
 		}
 	}
 }

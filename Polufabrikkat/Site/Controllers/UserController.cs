@@ -29,8 +29,6 @@ namespace Polufabrikkat.Site.Controllers
 
 			var user = await _userService.GetUserById(UserId);
 			model.User = _mapper.Map<UserModel>(user);
-			var posts = await _postService.GetPostsByUserId(UserId);
-			model.Posts = _mapper.Map<List<PostShortInto>>(posts);
 
 			return View(model);
 		}
