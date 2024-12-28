@@ -56,6 +56,7 @@ namespace Polufabrikkat.Core.Repositories
 		public async Task<List<Post>> GetFilteredPosts(
 			PostStatus[] statuses = null,
 			DateTime? scheduledPublicationTimeFrom = null,
+			DateTime? scheduledPublicationTimeTo = null,
 			ObjectId? userId = null)
 		{
 			var filterBuilder = Builders<Post>.Filter;
@@ -69,6 +70,11 @@ namespace Polufabrikkat.Core.Repositories
 			if (scheduledPublicationTimeFrom.HasValue)
 			{
 				filters.Add(filterBuilder.Gte(p => p.ScheduledPublicationTime, scheduledPublicationTimeFrom.Value));
+			}
+
+			if (scheduledPublicationTimeTo.HasValue)
+			{
+				filters.Add(filterBuilder.Lt(p => p.ScheduledPublicationTime, scheduledPublicationTimeTo.Value));
 			}
 
 			if (userId.HasValue)

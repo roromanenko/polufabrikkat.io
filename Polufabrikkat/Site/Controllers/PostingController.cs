@@ -145,7 +145,7 @@ namespace Polufabrikkat.Site.Controllers
 			{
 				await _tikTokService.WithAuthData(tiktokUser.AuthTokenData).PublishPhotoPost(newPost);
 			}
-			return Ok(newPost.Id.ToString());
+			return Json(newPost.Id.ToString());
 		}
 
 		[HttpPost]

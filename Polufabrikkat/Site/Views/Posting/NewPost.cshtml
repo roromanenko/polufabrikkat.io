@@ -122,4 +122,5 @@
 	var selectTikTokUserUrl = '@Url.Action("SelectTikTokUser", "Posting")';
 	var modelTikTokUsers = @Html.Raw(JsonSerializer.Serialize(Model.TikTokUsers, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
 	var createPostUrl = '@Url.Action("CreateNewPhotoPost", "Posting")';
+	var postUrl = '@Url.Action("Post", "Posting")';
 </script>

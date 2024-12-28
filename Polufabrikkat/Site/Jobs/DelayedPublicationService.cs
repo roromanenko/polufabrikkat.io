@@ -34,7 +34,8 @@ namespace Polufabrikkat.Site.Jobs
 
 				var postsToPublish = await postService.GetFilteredPosts(
 				statuses: [PostStatus.Created],
-				scheduledPublicationTimeFrom: DateTime.UtcNow);
+				scheduledPublicationTimeFrom: DateTime.UtcNow.AddDays(-1),
+				scheduledPublicationTimeTo: DateTime.UtcNow);
 
 				foreach (var post in postsToPublish)
 				{

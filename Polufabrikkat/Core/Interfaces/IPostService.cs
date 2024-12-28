@@ -9,6 +9,7 @@ namespace Polufabrikkat.Core.Interfaces
 		Task<List<Post>> GetFilteredPosts(
 			PostStatus[] statuses = null,
 			DateTime? scheduledPublicationTimeFrom = null,
+			DateTime? scheduledPublicationTimeTo = null,
 			string userId = null);
 	}
 }

@@ -4,6 +4,7 @@
 			tiktokUsers: this.initializeTikTokUsers(modelTikTokUsers),
 			selectTikTokUserUrl: selectTikTokUserUrl,
 			createPostUrl: createPostUrl,
+			postUrl: postUrl,
 
 			selectedTikTokUser: '',
 			title: '',
@@ -108,8 +109,13 @@
 					method: 'POST',
 					body: formData,
 				});
-				const content = await response.json();
-				console.log(content);
+
+				const newPostId = await response.json();
+				var redirectUrl = this.postUrl + "/" + newPostId;
+
+				console.log(newPostId);
+				window.location.href = redirectUrl;
+
 			} catch (error) {
 				console.error('Upload failed:', error);
 			}

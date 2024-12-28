@@ -43,10 +43,11 @@ namespace Polufabrikkat.Core.Services
 		public Task<List<Post>> GetFilteredPosts(
 			PostStatus[] statuses = null,
 			DateTime? scheduledPublicationTimeFrom = null,
+			DateTime? scheduledPublicationTimeTo = null,
 			string userId = null)
 		{
-			return _postRepository.GetFilteredPosts(statuses, scheduledPublicationTimeFrom,
-				string.IsNullOrEmpty(userId) ? null : ObjectId.Parse(userId));
+			return _postRepository.GetFilteredPosts(statuses, scheduledPublicationTimeTo:scheduledPublicationTimeTo,
+				userId: string.IsNullOrEmpty(userId) ? null : ObjectId.Parse(userId));
 		}
 	}
 }
